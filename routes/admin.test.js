@@ -87,7 +87,7 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0]).toHaveLength(3);
       expect(User.fetchAll.mock.calls[0][0]).toBe('thisisatoken');
       expect(User.fetchAll.mock.calls[0][1]).toBe(0);
-      expect(User.fetchAll.mock.calls[0][2]).toBe(100);
+      expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
     });
 
     test('basic page checks', async () => {
@@ -120,7 +120,7 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0]).toHaveLength(3);
       expect(User.fetchAll.mock.calls[0][0]).toBe('thisisatoken');
       expect(User.fetchAll.mock.calls[0][1]).toBe(0);
-      expect(User.fetchAll.mock.calls[0][2]).toBe(100);
+      expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
       expect(response.statusCode).toBe(500);
     });
   });
