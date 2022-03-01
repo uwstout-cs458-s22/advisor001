@@ -78,7 +78,7 @@ describe('Index Route Tests', () => {
       const response = await request(app).get('/');
       // redirects to admin (for now)
       expect(response.statusCode).toBe(302);
-      expect(response.headers.location).toBe('/admin');
+      expect(response.headers.location).toBe('/advise');
     });
 
     test('basic page checks - not authenticated', async () => {

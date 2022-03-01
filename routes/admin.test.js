@@ -97,7 +97,7 @@ describe('Admin Route Tests', () => {
       const doc = new JSDOM(response.text).window.document;
 
       // check the main navbar
-      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/admin');
+      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('#');
       expect(doc.querySelector('.navbar-nav>.navbar-text').innerHTML).toContain(
         'master@uwstout.edu'
       );
