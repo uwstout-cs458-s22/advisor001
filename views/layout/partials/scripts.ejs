@@ -12,10 +12,10 @@
     window.onmousemove = resetTimer;
     window.onmousedown = resetTimer; // catches touchscreen presses as well      
     window.ontouchstart = resetTimer; // catches touchscreen swipes as well      
-    window.ontouchmove = resetTimer; // required by some devices 
-    window.onclick = resetTimer; // catches touchpad clicks as well
-    window.onkeydown = resetTimer;
-    window.addEventListener('scroll', resetTimer, true);
+    window.ontouchmove = resetTimer;  // required by some devices 
+    window.onclick = resetTimer;      // catches touchpad clicks as well
+    window.onkeydown = resetTimer; 
+    window.addEventListener('scroll', resetTimer, true); 
 
     function redirectToLogout() {
       window.location.href = '/logout';
@@ -23,7 +23,7 @@
 
     function resetTimer() {
       clearTimeout(t);
-        t = setTimeout(redirectToLogout, 120* 60 * 1000);  // 2 hours of inactivity
+      t = setTimeout(redirectToLogout, 120* 60 * 1000);  // 2 hours of inactivity
     }
   }
   idleLogout();
