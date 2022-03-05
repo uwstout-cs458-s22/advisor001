@@ -4,14 +4,9 @@
 <div class="alert alert-danger" role="alert"><%- messages.error %></div>
 <% } %>
 
-<!-- <div class="row btn-group align-self-center m-2">
-  <button type="button" class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal">Add Event</button>
-</div> -->
-
 <!-- Edit User Modal -->
 <div id="editModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-dialog modal-content">
   <!-- Modal Header -->
     <div class="modal-header">
       <h4 class="modal-title">Edit User</h4>
@@ -19,27 +14,18 @@
     </div>
     <!-- Modal Body -->
     <div class="modal-body">
-    <form>
-      <div class = "form-group">
-        <label for = "inputUserEmail">Email</label>
-        <input class = "form-control" placeholder="New email " type="text" id="inputUserEmail"> </input>
-      </div>
-    </form>
-    <div class ="row m-1">
-      <div class="col-2">
-        New Name:
-      </div>
-      <div class="col-10">
-        <input type="text" id="eventNameEDIT" class="form-control ml-2">
-      </div>
-    </div>
+      <form>
+        <div class="form-group">
+          <label for="inputUserEmail">Email</label>
+          <input class="form-control" placeholder="New email " type="text" id="inputUserEmail"> </input>
+        </div>
+      </form>
     </div>
     <!-- Modal Footer -->
     <div class="modal-footer">
       <button class="btn btn-success">Save</button>
-      <button class = "btn btn-warning" data-dismiss = "modal">Close</button>
+      <button class="btn btn-danger" data-dismiss="modal">Close</button>
     </div>
-  </div>
   </div>
 </div>
 
