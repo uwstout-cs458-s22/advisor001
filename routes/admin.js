@@ -9,7 +9,8 @@ module.exports = function () {
   router.use(bodyParser.json());
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
-      const users = await User.fetchAll(req.session.session_token, 0, 100);
+      // In the future it would be helpful to get an amount of all users in the database and replace the hardcoded value.
+      const users = await User.fetchAll(req.session.session_token, 0, 10000000);
       res.render('layout', {
         pageTitle: 'Advisor Admin',
         group: 'admin',
