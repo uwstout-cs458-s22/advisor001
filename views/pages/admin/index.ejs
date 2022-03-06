@@ -1,3 +1,40 @@
+
+<!--Code for the "Add User" modal.-->
+   <!--Idea for error reporting; add try-catch to modal, but how?-->
+   <!--Additional ideas: if-else statments for inproper input.-->
+   <div class = "container">
+    <div class = "row">
+        <div class = "col-xs-12">
+            <div class="modal fade" data-backdrop = "static"  id="addModal" tabindex="-1">
+              <div class ="modal-dialog">
+                    <div class = "modal-content">
+                     <!--Creation of modal header. -->
+                      <div class = "modal-header"> 
+                          <h4 class = "modal-title">Add User</h4>
+                            <button class = "close" data-dismiss="modal">&times;</button>
+                         
+                        </div>
+                        <!--Creation of modal body.-->
+                        <div class = "modal-body">
+                            <form>
+                               <!--Prompts user to enter email address of person they wish to add.-->
+                                <div class = "form-group">
+                                    <label for = "inputUserEmail">Email</label>
+                                    <input class = "form-control" placeholder="User email " type="text" id="inputUserEmail"> </input>
+                                </div>
+                            </form>
+                        </div>
+                        <!--Prompts user to add the user and close the window.-->
+                        <div class = "modal-footer">
+                            <button class="btn btn-primary">Add</button>
+                            <button class = "btn btn-primary" data-dismiss = "modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <% if (messages.success) { %>
 <div class="alert alert-success" role="alert"><%- messages.success %></div>
 <% } %> <% if (messages.error) { %>
@@ -11,7 +48,7 @@
         <a class="nav-link">Users</a>
       </li>
       <li class="nav-pill ml-auto">
-        <a class="nav-link active" href="/users/add">Add User</a>
+        <a class="btn btn-secondary add"  data-toggle="modal" data-target="#addModal" href="/users/add">Add User</a>
       </li>
     </ul>
   </div>
