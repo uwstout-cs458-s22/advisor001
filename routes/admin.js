@@ -16,6 +16,7 @@ module.exports = function () {
         group: 'admin',
         template: 'index',
         email: req.session.user.email,
+        role: req.session.user.role,
         data: users,
       });
       log.info(

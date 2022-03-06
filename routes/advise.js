@@ -12,6 +12,7 @@ module.exports = function () {
       group: 'advise',
       template: 'index',
       email: req.session.user.email,
+      role: req.session.user.role,
     });
     log.info(`${req.method} ${req.originalUrl} success: rendering advisement page`);
   });
