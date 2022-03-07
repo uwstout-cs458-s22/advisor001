@@ -16,17 +16,31 @@
                         <!--Creation of modal body.-->
                         <div class = "modal-body">
                             <form>
+                              <!--Radio buttons-->
+                              <p>Enabled</p>
+                              <input type="radio" id="act" name="account_status" value="ACTIVE">
+                              <label for="act">Active</label><br>
+                              <input type="radio" id="dis" name="account_status" value="DISABLED">
+                              <label for="dis">Disabled</label><br>
                                <!--Prompts user to enter email address of person they wish to add.-->
                                 <div class = "form-group">
                                     <label for = "inputUserEmail">Email</label>
                                     <input class = "form-control" placeholder="User email " type="text" id="inputUserEmail"> </input>
                                 </div>
+                                <!--Cascading drop-down menu of user role options-->
+                                <p>Role</p>
+                                <select name="sel" id="select">
+                                  <option value="" selected="selected">Admin</option>
+                                  <option value="" selected="selected">Manager</option>
+                                  <option value="" selected="selected">User</option>
+                                  <option value="" selected="selected">--Select--</option>
+                                </select>
                             </form>
                         </div>
                         <!--Prompts user to add the user and close the window.-->
                         <div class = "modal-footer">
-                            <button class="btn btn-primary">Add</button>
-                            <button class = "btn btn-primary" data-dismiss = "modal">Close</button>
+                            <button class="btn btn-success">Add</button>
+                            <button class = "btn btn-danger" data-dismiss = "modal">Close</button>
                             </div>
                         </div>
                     </div>
