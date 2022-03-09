@@ -28,3 +28,9 @@ module.exports = function () {
 
   return router;
 };
+/*
+module.exports =  
+  function delUser(sessionToken, userId) {
+    User.deleteUser(sessionToken, userId);
+  }
+*/

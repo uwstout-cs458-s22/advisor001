@@ -56,6 +56,20 @@ module.exports = function () {
     log.info(`${req.method} ${req.originalUrl} success: redirecting to /login page`);
   });
 
+  router.get('/users/delete/:userID', isUserLoaded, async (req, res, next) => {
+    alert("worked");
+    try {
+      const userID = req.params.userID
+      console.log(userID);
+      const users = await User.deleteUser(userID);
+      log.info(
+        `${req.method} ${req.originalUrl} success: rendering admin page with ${users.length} user(s)`
+      );
+    } catch (error) {
+      next(error);
+    }
+  });
+
   const adviseRoutes = require('./advise')();
   const manageRoutes = require('./manage')();
   const adminRoutes = require('./admin')();
