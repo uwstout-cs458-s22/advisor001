@@ -68,11 +68,17 @@
   //Check if user is not enabled. If they are not, redirect them to the login page and alert them of their status
   //This is outside of a function so that it will run every time the page is refreshed
   const enabled = '<%= enable %>';
-  console.log(enabled);
   if (enabled === 'false') {
     window.location.href = '/logout';
     alert(
       'You are not an enabled user. Please contact an admin so that they can enable your account.'
     );
   }
+
+  //This will ensure that the user will logged out if they try to change pages while not enabled
+  window.onbeforeunload = function () {
+    if (enabled === 'false') {
+      window.location.href = '/logout';
+    }
+  };
 </script>
