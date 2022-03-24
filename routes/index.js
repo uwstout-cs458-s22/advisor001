@@ -56,15 +56,16 @@ module.exports = function () {
     log.info(`${req.method} ${req.originalUrl} success: redirecting to /login page`);
   });
 
-  router.get('/users/delete/:userID', isUserLoaded, async (req, res, next) => {
-    alert("worked");
+  router.get('/users/delete/:userID', async (req, res, next) => {
     try {
       const userID = req.params.userID
       console.log(userID);
-      const users = await User.deleteUser(userID);
+      console.log(req.session.session_token);
+      const users = await User.deleteUser(req.session.session_token, userID);
       log.info(
-        `${req.method} ${req.originalUrl} success: rendering admin page with ${users.length} user(s)`
+        `${req.method} ${req.originalUrl} success: successfully deleted and rerouted`
       );
+      res.redirect('/');
     } catch (error) {
       next(error);
     }
