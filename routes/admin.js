@@ -26,21 +26,51 @@ module.exports = function () {
     }
   });
   //Post function for Add User Modal
-  router.get('/users/add', isUserLoaded, async (req, res, next) =>{
+  
+  router.get('../users/addUser/:userID, Email', async (req, res, next) =>{
   try {
-    //Copied and pasted from above try-catch.
-    //Response: once done, request, grabbing things 
-    //Request data from modal
-    //Where 0 is will be userID, where 10000000 is will be email.
-    //Will have to pass userId and email to get to be able to use them. How to pull out of form/ modal?
-    const users = await User.create(req.session.session_token, 0, 10000000);
-    ;
+    const userID = req.params.userID
+    const Email = req.params.Email
+    console.log(userID);
+    console.log(Email);
+    console.log(req.session.session_token);
+    const users = await User.create(req.session.session_token, userID, Email);
     log.info(
       `${req.method} ${req.originalUrl} success: new user(s) info has been entered.`
     );
+    res.redirect('/');
   } catch (error) {
     next(error);
   }
 });
 return router;
 };
+
+
+/*router.get('/users/delete/:userID', async (req, res, next) => {
+  try {
+    const userID = req.params.userID
+    console.log(userID);
+    console.log(req.session.session_token);
+    const users = await User.deleteUser(req.session.session_token, userID);
+    log.info(
+      `${req.method} ${req.originalUrl} success: successfully deleted and rerouted`
+    );
+    res.redirect('/');
+  } catch (error) {
+    next(error);
+  }
+});
+
+async function deleteUser(sessionToken, userId) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.delete(`users/${userId}`);
+  if (response.status === 200) {
+    log.debug(`User: ${userId} successfully deleted`);
+  } else {
+    throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.error.message}`);
+  }
+}*/
+
