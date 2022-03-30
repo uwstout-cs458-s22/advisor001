@@ -26,5 +26,24 @@ module.exports = function () {
     }
   });
 
+  // Edit user function for Edit User Modal
+  router.get('../users/edit/:userID', async (req, res, next) => {
+    try {
+      const userID = req.params.userID
+      const Email = req.params.Email
+      console.log(userID);
+      console.log(Email);
+      console.log(req.session.session_token);
+      const editedUser = await User.edit(userID, Email);
+      // const users = await User.create(req.session.session_token, userID, Email);
+      log.info(
+        `${req.method} ${req.originalUrl} success: returning edited user ${editedUser}`
+      );
+      res.redirect('/');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return router;
 };
