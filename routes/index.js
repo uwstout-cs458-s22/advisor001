@@ -56,6 +56,15 @@ module.exports = function () {
     log.info(`${req.method} ${req.originalUrl} success: redirecting to /login page`);
   });
 
+  router.get('/users/edit/', isUserLoaded, async (req, res, next) => {
+    try {
+      await User.edit(req.session.session_token, '007', 'test');
+      res.redirect('/admin');
+    } catch(error) {
+      next(error);
+    }
+  });
+
   const adviseRoutes = require('./advise')();
   const manageRoutes = require('./manage')();
   const adminRoutes = require('./admin')();
