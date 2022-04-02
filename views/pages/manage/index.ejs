@@ -1,3 +1,56 @@
-<div>
-  This will be the management page - mid semester work
+<div class="card">
+  <div class="card-header">
+    <div>Welcome to the Manage Page</div>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <form action="programs.ejs">
+        <label for="programs">What Program would you like to view?</label>
+        <br>
+        <select name="programs" id="programs" class="form-control">
+          <option value="none" selected disabled hidden>Select a Program</option>
+          <optgroup label="Majors">
+            <option value="compsci">Computer Science</option>
+            <option value="english">English</option>
+          </optgroup>
+          <optgroup label="Minors">
+            <option value="math">Math</option>
+            <option value="english">English</option>
+          </optgroup>
+        </select>
+        <br>
+        <input type="submit" value="Search"  class="btn btn-primary">
+      </form>
+    </div>
+    <br>
+    <div class="form-group">
+      <form action="">
+        <label for="terms">What Term would you like to view?</label>
+        <br>
+        <select name="terms" id="terms" class="form-control">
+          <option value="none" selected disabled hidden>Select an Term</option>
+          <optgroup label="Fall">
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+          </optgroup>
+          <optgroup label="Spring">
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+          </optgroup>
+          <optgroup label="Summer">
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+          </optgroup>
+          <optgroup label="Winter">
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+          </optgroup>
+        </select>
+        <br>
+        <input type="submit" value="Search" class="btn btn-primary">
+      </form>
+    </div>
+    <br>
+    </div>
+  </div>
 </div>

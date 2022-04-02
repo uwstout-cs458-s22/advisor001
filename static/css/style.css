@@ -65,3 +65,7 @@ body {
   justify-content: center;
   width: 450px;
 }
+
+.dropMenu {
+  width: 170px;
+}
