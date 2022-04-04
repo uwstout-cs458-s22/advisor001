@@ -1,8 +1,9 @@
 function deSerializeCourse(data) {
   return {
     id: data.id,
-    department: data.department,
-    number: data.number,
+    department: data.prefix,
+    number: data.suffix,
+    desc: data.title,
     credits: data.credits,
   };
 }

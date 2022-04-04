@@ -21,6 +21,7 @@
       <thead>
         <tr>
           <th scope="col">Id</th>
+          <th scope="col">Description</th>
           <th scope="col">Department</th>
           <th scope="col">Number</th>
           <th scope="col">Credits</th>
@@ -31,6 +32,7 @@
         <% for(var i = 0; i< data.length; i++) { %>
         <tr>
           <th scope="row" class="align-middle"><%= data[i].id %></th>
+          <td class="align-middle"><%= data[i].desc %></td>
           <td class="align-middle"><%= data[i].department %></td>
           <td class="align-middle"><%= data[i].number%></td>
           <td class="align-middle"><%= data[i].credits%></td>
