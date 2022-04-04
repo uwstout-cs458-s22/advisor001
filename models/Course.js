@@ -1,10 +1,10 @@
 class Course {
   constructor(params) {
     this.id = params.id;
-    this.department = params.department;
-    this.number = params.number;
+    this.prefix = params.prefix;
+    this.suffix = params.suffix;
     this.credits = params.credits;
-    this.desc = params.desc;
+    this.title = params.title;
   }
 
   // future complex logic functions can go here
