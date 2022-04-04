@@ -25,28 +25,11 @@ module.exports = function () {
       next(error);
     }
   });
-  //Post function for Add User Modal
-  
-  router.get('../users/addUser/:userID, Email', async (req, res, next) =>{
-  try {
-    const userID = req.params.userID
-    const Email = req.params.Email
-    console.log(userID);
-    console.log(Email);
-    console.log(req.session.session_token);
-    const users = await User.create(req.session.session_token, userID, Email);
-    log.info(
-      `${req.method} ${req.originalUrl} success: new user(s) info has been entered.`
-    );
-    res.redirect('/');
-  } catch (error) {
-    next(error);
-  }
-});
+ 
 return router;
 };
 
-
+//Reference methods for constructing Add User method.
 /*router.get('/users/delete/:userID', async (req, res, next) => {
   try {
     const userID = req.params.userID

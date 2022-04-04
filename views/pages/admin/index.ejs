@@ -35,20 +35,30 @@
                                   <option value="" selected="selected">User</option>
                                   <option value="" selected="selected">--Select--</option>
                                 </select>
+
+                                <div class="form-group">
+                                  <!-- <button type="submit" class="btn btn-success" href="../users/edit/">Save</button> -->
+                                  <button type="submit" class="btn btn-success" href ="/admin/users/addUser">Add</button>
+                                  <button class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+
+
                             </form>
                         </div>
                         <!--Prompts user to add the user and close the window.-->
-                         
+                         <!--
                         <div class = "modal-footer">
-                            <button class="btn btn-success addUser" data-dismiss = "modal" href="/users/addUser/ ">Add</button>
+                            <button class="btn btn-success addUser" data-dismiss = "modal" href="admin/users/addUser/ ">Add</button>
                             <button class = "btn btn-danger" data-dismiss = "modal">Close</button>
-                            </div>
+                        </div>-->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!--Commented out code for testing connection to add users.
+    <a class="btn btn-secondary" href="/users/AddUser">Testing</a>-->
 <% if (messages.success) { %>
 <div class="alert alert-success" role="alert"><%- messages.success %></div>
 <% } %> <% if (messages.error) { %>
@@ -62,7 +72,7 @@
         <a class="nav-link">Users</a>
       </li>
       <li class="nav-pill ml-auto">
-        <a class="btn btn-secondary add" data-toggle="modal" data-target="#addModal" href="/users/add">Add User</a>
+        <a class="btn btn-secondary add" data-toggle="modal" data-target="#addModal" href="/users/addUser">Add User</a>
       </li>
     </ul>
   </div>

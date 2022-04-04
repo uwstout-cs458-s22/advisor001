@@ -56,6 +56,35 @@ module.exports = function () {
     log.info(`${req.method} ${req.originalUrl} success: redirecting to /login page`);
   });
 
+  //Add user method
+  /*
+  router.get('/users/addUser/:userID, Email', async (req, res, next) =>{
+    try {
+      const userID = req.params.userID
+      const Email = req.params.Email
+      console.log(userID);
+      console.log(Email);
+      console.log(req.session.session_token);
+      const users = await User.create(req.session.session_token, userID, Email);
+      log.info(
+        `${req.method} ${req.originalUrl} success: new user(s) info has been entered.`
+      );
+      res.redirect('/');
+    } catch (error) {
+      next(error);
+    }
+  });
+*/
+
+//Jeremy's method for attempting add user connection
+router.get('/users/addUser', isUserLoaded, async (req, res, next) => {
+  try {
+    await User.create(req.session.session_token, '004', 'email4');
+    res.redirect('/admin');
+  } catch (error) {
+    next(error);
+  }
+});
   const adviseRoutes = require('./advise')();
   const manageRoutes = require('./manage')();
   const adminRoutes = require('./admin')();
