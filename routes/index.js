@@ -65,7 +65,7 @@ module.exports = function () {
       log.info(
         `${req.method} ${req.originalUrl} success: successfully deleted and rerouted`
       );
-      res.redirect('/');
+      res.redirect('/admin');
     } catch (error) {
       next(error);
     }
