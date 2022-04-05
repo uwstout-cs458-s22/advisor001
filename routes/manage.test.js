@@ -109,10 +109,6 @@ describe('Manage Route Tests', () => {
 
       // check the main navbar
       expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/manage');
-      expect(doc.querySelector('.navbar-nav>.navbar-text').innerHTML).toContain(
-        'master@uwstout.edu'
-      );
-
 
       // count the rows
       const rows = doc.querySelectorAll('.card-body>table>tbody>tr');
