@@ -1,7 +1,5 @@
 const axios = require('axios');
 const log = require('loglevel');
-//const { test } = require('stytch/types/lib/envs');
-//const { test } = require('stytch/types/lib/envs');
 const User = require('./User');
 
 jest.mock('axios');
@@ -165,7 +163,6 @@ describe('User controller tests', () => {
     });
   });
 
-  
   describe('delete tests', () => {
     test('delete - valid delete', async () => {
       const user = {
@@ -176,32 +173,30 @@ describe('User controller tests', () => {
         userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
       };
       axios.delete.mockResolvedValueOnce({
-        data: user, status: 200
+        data: user,
+        status: 200,
       });
-      const result = await User.deleteUser('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c');
-      
-      expect(axios.delete).toHaveBeenCalledWith("users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c");
+      const result = await User.deleteUser(
+        'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
+        'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
+      );
+
+      expect(axios.delete).toHaveBeenCalledWith(
+        'users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
+      );
       expect(result).toEqual(undefined);
-    })
+    });
 
     test('delete - Required Parameters Missing', async () => {
-      
       axios.delete.mockResolvedValueOnce({
-        status: 400, 
-        data: { Error: 'Required Parameters Missing' }
+        status: 400,
+        data: { Error: 'Required Parameters Missing' },
       });
 
       await expect(
-        User.deleteUser(
-          'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
-          undefined
-          )
+        User.deleteUser('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', undefined)
       ).rejects.toThrow('Error 400: Required Parameters Missing');
-      expect(axios.delete).toHaveBeenCalledWith("users/" + undefined);
-      
+      expect(axios.delete).toHaveBeenCalledWith('users/' + undefined);
     });
-
   });
-
 });
-
