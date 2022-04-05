@@ -14,11 +14,9 @@
     </div>
     <!-- Modal Body -->
     <div class="modal-body">
-      <form id="editForm">
+      <form id="editForm" method="POST" action="/admin/users/edit">
         <!--User Id -->
-        <div class="row" id="userID">
-          <%=data[i].id%>
-        </div>
+        <div class="row" id="userID"><%=data[i].userId%></div>
         <!-- User Status -->
         <label for="enabler">Enabled</label>
         <div class="form-group enabler">
@@ -31,10 +29,10 @@
             <label class="form-check-label" for="disabled"></label>
           </div>
         </div>
-        <!-- User Email --> <!-- MAKE NON-EDITABLE -->
+        <!-- User Email -->
         <div class="form-group">
           <label for="inputUserEmail">Email</label>
-          <input class="form-control" placeholder="<%=data[i].email%>" type="text" id="inputUserEmail"> </input>
+          <input class="form-control" placeholder="<%=data[i].email%>" type="text" id="inputUserEmail" disabled> </input>
         </div>
         <!-- User Role -->
         <div class="form-group">

@@ -44,37 +44,49 @@ module.exports = function () {
   //     next(error);
   //   }
   // });
-
-  function editUser(userID, newValues) {
-    router.get('/users/edit', isUserLoaded, async (req, res, next) => {
-      try {
-        await User.edit(req.session.session_token, userID, newValues);
-        res.redirect('/admin');
-      } catch(error) {
-        next(error);
-      }
-    });
-  }
   
-    const editFormSubmit = document.getElementById('editForm')
-    editFormSubmit.addEventListener('submit', (event) => {
-      event.preventDefault()
+  router.post('/users/edit', isUserLoaded, async (req, res, next) => {
+    const newValues = {
+      enable: req.body.enable,
+      role: req.body.role
+    }
+    try {
+      await User.edit(req.session.session_token, req.body.userID, newValues);
+      res.redirect('/admin');
+    } catch(error) {
+      next(error);
+    }
+  });
 
-      // check if user is enabled/disabled
-      let isEnabled = true
-      if(document.getElementById('enabled') === true) {
-        console.log("enabled")
-      } else {
-        isEnabled = false
-      }
-      // create newValues object to send
-      const newValues = {
-        enable: isEnabled,
-        role: document.getElementById('role')
-      }
-      // User.edit(req.session.session_token, document.getElementById('userID'), newValues)
-      editUser(document.getElementById('userID'), newValues);
-    });
+  // function editUser(userID, newValues) {
+  //   router.get('/users/edit', isUserLoaded, async (req, res, next) => {
+  //     try {
+  //       await User.edit(req.session.session_token, userID, newValues);
+  //       res.redirect('/admin');
+  //     } catch(error) {
+  //       next(error);
+  //     }
+  //   });
+  // }
+    // const editFormSubmit = document.getElementById('editForm')
+    // editFormSubmit.addEventListener('submit', (event) => {
+    //   event.preventDefault()
+
+    //   // check if user is enabled/disabled
+    //   let isEnabled = true
+    //   if(document.getElementById('enabled') === true) {
+    //     console.log("enabled")
+    //   } else {
+    //     isEnabled = false
+    //   }
+    //   // create newValues object to send
+    //   const newValues = {
+    //     enable: isEnabled,
+    //     role: document.getElementById('role')
+    //   }
+    //   // User.edit(req.session.session_token, document.getElementById('userID'), newValues)
+    //   editUser(document.getElementById('userID'), newValues);
+    // });
 
   return router;
 };
