@@ -11,7 +11,7 @@ module.exports = function () {
     try {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
       res.render('layout', {
-        pageTitle: 'Advisor Manage',
+        pageTitle: 'Advisor Management',
         group: 'manage',
         template: 'index',
         email: req.session.user.email,
@@ -19,7 +19,7 @@ module.exports = function () {
         data: courses,
       });
       log.info(
-        `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} user(s)`
+        `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s)`
       );
     } catch (error) {
       next(error);

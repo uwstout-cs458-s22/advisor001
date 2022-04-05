@@ -4,7 +4,6 @@ const { deSerializeCourse } = require('../serializers/Course');
 const Course = require('../models/Course');
 const HttpError = require('http-errors');
 
-// No support for fetchAll on API side yet
 async function fetchAll(sessionToken, offset, limit) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
