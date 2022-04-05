@@ -31,7 +31,9 @@ async function edit(sessionToken, userId, newValues) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
-  const response = await request.edit(`users/${userId}`, { 
+  // const response = await request.edit(`users/${userId}`, { 
+  const response = await request.post('users', { 
+    userId: userId,
     newValues: newValues
   });
   if (response.status === 200 || response.status === 201) {

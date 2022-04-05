@@ -16,7 +16,7 @@
     <div class="modal-body">
       <form id="editForm" method="POST" action="/admin/users/edit">
         <!--User Id -->
-        <div class="row" id="userID"><%=data[i].userId%></div>
+        <div class="row" id="userID"></div>
         <!-- User Status -->
         <label for="enabler">Enabled</label>
         <div class="form-group enabler">
@@ -32,7 +32,7 @@
         <!-- User Email -->
         <div class="form-group">
           <label for="inputUserEmail">Email</label>
-          <input class="form-control" placeholder="<%=data[i].email%>" type="text" id="inputUserEmail" disabled> </input>
+          <input class="form-control" placeholder="" type="text" id="inputUserEmail" disabled> </input>
         </div>
         <!-- User Role -->
         <div class="form-group">

@@ -44,7 +44,7 @@ module.exports = function () {
   //     next(error);
   //   }
   // });
-  
+
   router.post('/users/edit', isUserLoaded, async (req, res, next) => {
     const newValues = {
       enable: req.body.enable,
@@ -52,7 +52,10 @@ module.exports = function () {
     }
     try {
       await User.edit(req.session.session_token, req.body.userID, newValues);
-      res.redirect('/admin');
+      log.info(
+        `${req.method} ${req.originalUrl} success: returning edited user ${req.body.userID}`
+      );
+      res.redirect('/admin');  
     } catch(error) {
       next(error);
     }
