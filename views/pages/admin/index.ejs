@@ -14,7 +14,11 @@
     </div>
     <!-- Modal Body -->
     <div class="modal-body">
-      <form>
+      <form id="editForm">
+        <!--User Id -->
+        <div class="row" id="userID">
+          <%=data[i].id%>
+        </div>
         <!-- User Status -->
         <label for="enabler">Enabled</label>
         <div class="form-group enabler">
@@ -27,10 +31,10 @@
             <label class="form-check-label" for="disabled"></label>
           </div>
         </div>
-        <!-- User Email -->
+        <!-- User Email --> <!-- MAKE NON-EDITABLE -->
         <div class="form-group">
           <label for="inputUserEmail">Email</label>
-          <input class="form-control" placeholder="New email " type="text" id="inputUserEmail"> </input>
+          <input class="form-control" placeholder="<%=data[i].email%>" type="text" id="inputUserEmail"> </input>
         </div>
         <!-- User Role -->
         <div class="form-group">
@@ -45,7 +49,7 @@
         <!-- Modal Footer -->
         <div class="form-group">
           <!-- <button type="submit" class="btn btn-success" href="../users/edit/">Save</button> -->
-          <button type="submit" class="btn btn-success" href="../users/edit/">Save</button>
+          <button type="submit" class="btn btn-success" href="/admin/users/edit">Save</button>
           <button class="btn btn-danger" data-dismiss="modal">Close</button>
         </div>
       </form>
