@@ -4,6 +4,29 @@ const { deSerializeCourse } = require('../serializers/Course');
 const Course = require('../models/Course');
 const HttpError = require('http-errors');
 
+async function create(sessionToken, title, description, prefix, suffix, credits) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.post('course', {
+    title,
+    description,
+    prefix,
+    suffix,
+    credits,
+  });
+  if (response.status === 200 || response.status === 201) {
+    const courseParms = deSerializeCourse(response.data);
+    const course = new Course(courseParms);
+    log.debug(
+      `Advisor API Success: Created (${response.status}) Course ${course.id} (${course.courseName})`
+    );
+    return course;
+  } else {
+    throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
+  }
+}
+
 async function fetchAll(sessionToken, offset, limit) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
@@ -23,4 +46,5 @@ async function fetchAll(sessionToken, offset, limit) {
 
 module.exports = {
   fetchAll,
+  create,
 };

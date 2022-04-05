@@ -26,5 +26,17 @@ module.exports = function () {
     }
   });
 
+  router.get('/manage/course/add/:newCourse', async (req, res, next) => {
+    try {
+      // Find way to get newCourse as an object containing all data from the add course modal
+      // Pass newCourse to Course.create
+      await Course.create(req.session.session_token, title, description, prefix, suffix, credits);
+      log.info(`${req.method} ${req.originalUrl} success: successfully added`);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return router;
 };
