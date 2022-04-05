@@ -74,17 +74,10 @@ module.exports = function () {
       next(error);
     }
   });
+  Jeremy's method was here
 */
 
-//Jeremy's method for attempting add user connection
-router.get('/users/addUser', isUserLoaded, async (req, res, next) => {
-  try {
-    await User.create(req.session.session_token, '004', 'email4');
-    res.redirect('/admin');
-  } catch (error) {
-    next(error);
-  }
-});
+
   const adviseRoutes = require('./advise')();
   const manageRoutes = require('./manage')();
   const adminRoutes = require('./admin')();

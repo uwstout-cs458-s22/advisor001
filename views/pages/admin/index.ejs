@@ -1,33 +1,32 @@
 <!--Code for the "Add User" modal.-->
-   <!--Idea for error reporting; add try-catch to modal, but how?-->
-   <!--Additional ideas: if-else statments for inproper input.-->
+<!--Code commented out for experimentation purposes, remember to put comments back later!
    <div class = "container">
     <div class = "row">
         <div class = "col-xs-12">
             <div class="modal fade" data-backdrop = "static"  id="addModal" tabindex="-1">
               <div class ="modal-dialog">
                     <div class = "modal-content">
-                     <!--Creation of modal header. -->
+                     Creation of modal header. 
                       <div class = "modal-header"> 
                           <h4 class = "modal-title">Add User</h4>
                             <button class = "close" data-dismiss="modal">&times;</button>
                          
                         </div>
-                        <!--Creation of modal body.-->
+                        Creation of modal bodyc.
                         <div class = "modal-body">
                             <form>
-                              <!--Radio buttons-->
+                              Radio buttons
                               <p>Enabled</p>
                               <input type="radio" id="act" name="account_status" value="ACTIVE">
                               <label for="act">Active</label><br>
                               <input type="radio" id="dis" name="account_status" value="DISABLED">
                               <label for="dis">Disabled</label><br>
-                               <!--Prompts user to enter email address of person they wish to add.-->
+                               Prompts user to enter email address of person they wish to add.
                                 <div class = "form-group">
                                     <label for = "inputUserEmail">Email</label>
                                     <input class = "form-control" placeholder="User email " type="text" id="inputUserEmail"> </input>
                                 </div>
-                                <!--Cascading drop-down menu of user role options-->
+                                Cascading drop-down menu of user role options
                                 <p>Role</p>
                                 <select name="sel" id="select">
                                   <option value="" selected="selected">Admin</option>
@@ -37,7 +36,7 @@
                                 </select>
 
                                 <div class="form-group">
-                                  <!-- <button type="submit" class="btn btn-success" href="../users/edit/">Save</button> -->
+                                   <button type="submit" class="btn btn-success" href="../users/edit/">Save</button> 
                                   <button type="submit" class="btn btn-success" href ="/admin/users/addUser">Add</button>
                                   <button class="btn btn-danger" data-dismiss="modal">Close</button>
                                 </div>
@@ -45,20 +44,126 @@
 
                             </form>
                         </div>
-                        <!--Prompts user to add the user and close the window.-->
-                         <!--
+                        Prompts user to add the user and close the window.
+                         
                         <div class = "modal-footer">
                             <button class="btn btn-success addUser" data-dismiss = "modal" href="admin/users/addUser/ ">Add</button>
                             <button class = "btn btn-danger" data-dismiss = "modal">Close</button>
-                        </div>-->
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+
+
+<!--Experimental add user modal code-->
+   <div class = "container">
+    <div class = "row">
+        <div class = "col-xs-12">
+            <div class="modal fade" data-backdrop = "static"  id="addModal" tabindex="-1">
+              <div class ="modal-dialog">
+                    <div class = "modal-content">
+                      <div class = "modal-header"> 
+                          <h4 class = "modal-title">Add User</h4>
+                            <button class = "close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class = "modal-body">
+                           <form>                   
+                                <script src="https://js.stytch.com/stytch.js"></script>
+                                <div class="App">
+                                  <header className="App-header"></header>
+                                  <div class="Sign-in-container">
+                                    <div id="magic-link">
+                                      <div id="advisor-welcome">
+                                       <!-- <h3>Welcome to Program Course Advisor</h3>-->
+                                        <h4>Please enter a @uwstout.edu email.</h4>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <script>
+                                  // Initialize Stytch.js with your public token. You can find this in your Stytch dashboard under API Keys.
+                                  var STYTCH_PUBLIC_TOKEN = 'public-token-test-98de2089-b8ab-4de1-9ad1-faf94fa77be5';
+                                  var stytch = Stytch(STYTCH_PUBLIC_TOKEN, {
+                                    onEvent: (data) => {
+                                      if (data.eventData.type === 'USER_EVENT_TYPE') {
+                                        try {
+                                          fetch('/magic', {
+                                            method: 'POST',
+                                            credentials: 'same-origin',
+                                            body: JSON.stringify({
+                                              userId: data.eventData.userId,
+                                              email: data.eventData.email,
+                                            }),
+                                            headers: {
+                                              'Content-Type': 'application/json',
+                                            },
+                                          });
+                                        } catch (e) {
+                                          console.log(e);
+                                        }
+                                      }
+                                    },
+                                    onSuccess: (response) => {
+                                      // Handle a successfully sent magic link
+                                      document.getElementById('advisor-welcome').style.display = 'none';
+                                      console.log(response);
+                                    },
+                                    onError: (response) => {
+                                      console.log(response);
+                                    },
+                                  });
+                                  var style = {
+                                    fontFamily: '"Helvetica New", Helvetica, sans-serif',
+                                    width: '321px',
+                                    primaryColor: '#0577CA',
+                                    hideHeaderText: true,
+                                  };
+                                  var magicLinkDefaults = {
+                                    products: ['emailMagicLinks'],
+                                    emailMagicLinksOptions: {
+                                      loginRedirectURL: location.origin + '/authenticate',
+                                      loginExpirationMinutes: 30,
+                                      signupRedirectURL: location.origin + '/authenticate',
+                                      signupExpirationMinutes: 30,
+                                    },
+                                  };
+                                  stytch.mount({
+                                    elementId: '#magic-link',
+                                    style: style,
+                                    loginOrSignupView: magicLinkDefaults,
+                                  });
+                                </script>
+                            </form>
+                        </div>
+                        </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!--Commented out code for testing connection to add users.
-    <a class="btn btn-secondary" href="/users/AddUser">Testing</a>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+   <!-- <a class="btn btn-secondary edit " href="/admin/users/AddUser">Add</a>-->
 <% if (messages.success) { %>
 <div class="alert alert-success" role="alert"><%- messages.success %></div>
 <% } %> <% if (messages.error) { %>
