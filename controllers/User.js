@@ -52,7 +52,7 @@ async function deleteUser(sessionToken, userId) {
   if (response.status === 200) {
     log.debug(`User: ${userId} successfully deleted`);
   } else {
-    throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.error.message}`);
+    throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.Error}`);
   }
 }
 

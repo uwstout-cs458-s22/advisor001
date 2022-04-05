@@ -56,21 +56,6 @@ module.exports = function () {
     log.info(`${req.method} ${req.originalUrl} success: redirecting to /login page`);
   });
 
-  router.get('/users/delete/:userID', async (req, res, next) => {
-    try {
-      const userID = req.params.userID
-      console.log(userID);
-      console.log(req.session.session_token);
-      const users = await User.deleteUser(req.session.session_token, userID);
-      log.info(
-        `${req.method} ${req.originalUrl} success: successfully deleted and rerouted`
-      );
-      res.redirect('/admin');
-    } catch (error) {
-      next(error);
-    }
-  });
-
   const adviseRoutes = require('./advise')();
   const manageRoutes = require('./manage')();
   const adminRoutes = require('./admin')();

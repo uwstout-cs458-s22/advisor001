@@ -5,6 +5,7 @@ const log = require('loglevel');
 const User = require('../controllers/User');
 const UserModel = require('../models/User');
 const auth = require('../services/auth');
+//const { test } = require('stytch/types/lib/envs');
 
 beforeAll(() => {
   log.disableAll();
@@ -13,6 +14,8 @@ beforeAll(() => {
 jest.mock('../controllers/User', () => {
   return {
     fetchAll: jest.fn(),
+    create: jest.fn(),
+    deleteUser: jest.fn()
   };
 });
 
@@ -34,6 +37,14 @@ const mockUser = new UserModel({
   role: 'admin',
 });
 
+const mockUser2 = new UserModel({
+  id: '1001',
+  email: 'mastwr@uwstout.edu',
+  userId: 'user-test-somaguid',
+  enable: 'true',
+  role: 'user',
+});
+
 jest.mock('../services/auth', () => {
   return {
     authenticateUser: jest.fn(),
@@ -44,6 +55,17 @@ jest.mock('../services/auth', () => {
 
 function resetMockIsUserLoaded() {
   auth.isUserLoaded.mockImplementation((req, res, next) => {
+    req.session = {
+      session_token: 'thisisatoken',
+      user: mockUser,
+    };
+    next();
+  });
+}
+
+function mockUserIsLoggedIn() {
+  auth.isUserLoaded.mockReset();
+  auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
     req.session = {
       session_token: 'thisisatoken',
       user: mockUser,
@@ -123,5 +145,24 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
       expect(response.statusCode).toBe(500);
     });
+
+    test('User.deleteUser successful route', async () => {
+      //const token = 'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q';
+      //const data = dataForGetUser(1);
+      //User.deleteUser.mockResolvedValue(mockUser);
+      //mockUserIsLoggedIn();
+      //User.create.mockResolvedValue(mockUser2);
+      //User.deleteUser.mockResolvedValue(mockUser2);
+      //const response = await request(app).get('/admin/users/delete/' + mockUser2.userId);
+      const response = await request(app).get('/admin/users/delete/');
+      expect(response.statusCode).toBe(200);
+      //expect(User.deleteUser.mock.calls).toBe([]);
+    })
+
+    test('User.deleteUser thrown error', async () => {
+      const response = await request(app).get('/admin/users/delete/' + undefined);
+      expect(response.statusCode).toBe(500);
+    })
+
   });
 });
