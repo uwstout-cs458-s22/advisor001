@@ -90,6 +90,17 @@ describe('Manage Route Tests', () => {
       expect(Course.fetchAll.mock.calls[0][2]).toBe(100);
     });
 
+    test('User.fetchAll thrown error', async () => {
+      Course.fetchAll.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get('/manage');
+      expect(Course.fetchAll.mock.calls).toHaveLength(1);
+      expect(Course.fetchAll.mock.calls[0]).toHaveLength(3);
+      expect(Course.fetchAll.mock.calls[0][0]).toBe('thisisatoken');
+      expect(Course.fetchAll.mock.calls[0][1]).toBe(0);
+      expect(Course.fetchAll.mock.calls[0][2]).toBe(100);
+      expect(response.statusCode).toBe(500);
+    });
+
     test('basic page checks', async () => {
       const data = dataForGetCourse(3);
       Course.fetchAll.mockResolvedValueOnce(data);
@@ -110,17 +121,6 @@ describe('Manage Route Tests', () => {
         expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].suffix);
         expect(rows[i].querySelector('td:nth-child(5)').innerHTML).toBe(data[i].credits);
       }
-    });
-
-    test('User.fetchAll thrown error', async () => {
-      Course.fetchAll.mockRejectedValue(HttpError(500, `Advisor API Error`));
-      const response = await request(app).get('/manage');
-      expect(Course.fetchAll.mock.calls).toHaveLength(1);
-      expect(Course.fetchAll.mock.calls[0]).toHaveLength(3);
-      expect(Course.fetchAll.mock.calls[0][0]).toBe('thisisatoken');
-      expect(Course.fetchAll.mock.calls[0][1]).toBe(0);
-      expect(Course.fetchAll.mock.calls[0][2]).toBe(100);
-      expect(response.statusCode).toBe(500);
     });
   });
 });
