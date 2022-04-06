@@ -25,43 +25,7 @@ module.exports = function () {
       next(error);
     }
   });
- //Jeremy's method for attempting add user connection
-router.get('/users/addUser', isUserLoaded, async (req, res, next) => {
-  try {
-    await User.create(req.session.session_token, '004', 'email4');
-    res.redirect('/admin');
-  } catch (error) {
-    next(error);
-  }
-});
-return router;
+
+  return router;
 };
-
-//Reference methods for constructing Add User method.
-/*router.get('/users/delete/:userID', async (req, res, next) => {
-  try {
-    const userID = req.params.userID
-    console.log(userID);
-    console.log(req.session.session_token);
-    const users = await User.deleteUser(req.session.session_token, userID);
-    log.info(
-      `${req.method} ${req.originalUrl} success: successfully deleted and rerouted`
-    );
-    res.redirect('/');
-  } catch (error) {
-    next(error);
-  }
-});
-
-async function deleteUser(sessionToken, userId) {
-  const request = axios.create({
-    headers: { Authorization: `Bearer ${sessionToken}` },
-  });
-  const response = await request.delete(`users/${userId}`);
-  if (response.status === 200) {
-    log.debug(`User: ${userId} successfully deleted`);
-  } else {
-    throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.error.message}`);
-  }
-}*/
 
