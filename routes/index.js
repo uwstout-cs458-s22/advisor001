@@ -14,8 +14,8 @@ module.exports = function () {
   router.use(bodyParser.json());
 
   router.get('/', isUserLoaded, async (req, res) => {
-    res.redirect('/admin'); // placeholder for now, probably won't eventually land on admin page
-    log.info(`${req.method} ${req.originalUrl} success: redirecting to /admin page`);
+    res.redirect('/advise'); // placeholder for now, probably won't eventually land on admin page
+    log.info(`${req.method} ${req.originalUrl} success: redirecting to /advise page`);
   });
 
   router.get('/login', async (req, res) => {
