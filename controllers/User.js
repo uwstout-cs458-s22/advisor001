@@ -32,8 +32,7 @@ async function edit(sessionToken, userId, newValues) {
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
   // const response = await request.edit(`users/${userId}`, { 
-  const response = await request.post('users', { 
-    userId: userId,
+  const response = await request.post(`users/${userId}`, { 
     newValues: newValues
   });
   if (response.status === 200 || response.status === 201) {

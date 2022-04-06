@@ -45,17 +45,23 @@ module.exports = function () {
   //   }
   // });
 
-  router.post('/users/edit', isUserLoaded, async (req, res, next) => {
+  router.post('/users/edit/:userID', isUserLoaded, async (req, res, next) => {
+    let isEnabled = true
+    if(req.body.enabled === true) {
+      console.log("enabled")
+    } else {
+      isEnabled = false
+    }
     const newValues = {
-      enable: req.body.enable,
+      enable: isEnabled,
       role: req.body.role
     }
     try {
-      await User.edit(req.session.session_token, req.body.userID, newValues);
+      await User.edit(req.session.session_token, req.params.userID, newValues);
       log.info(
-        `${req.method} ${req.originalUrl} success: returning edited user ${req.body.userID}`
+        `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userID}`
       );
-      res.redirect('/admin');  
+      res.redirect('/');  
     } catch(error) {
       next(error);
     }

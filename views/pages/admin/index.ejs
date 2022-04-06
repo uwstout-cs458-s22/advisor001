@@ -14,7 +14,7 @@
     </div>
     <!-- Modal Body -->
     <div class="modal-body">
-      <form id="editForm" method="POST" action="/admin/users/edit">
+      <form id="editForm" method="POST" action="/admin/users/edit/<%=${userID}%>">
         <!--User Id -->
         <div class="row" id="userID"></div>
         <!-- User Status -->
@@ -47,7 +47,7 @@
         <!-- Modal Footer -->
         <div class="form-group">
           <!-- <button type="submit" class="btn btn-success" href="../users/edit/">Save</button> -->
-          <button type="submit" class="btn btn-success" href="/admin/users/edit">Save</button>
+          <button type="submit" class="btn btn-success">Save</button>
           <button class="btn btn-danger" data-dismiss="modal">Close</button>
         </div>
       </form>
@@ -94,7 +94,7 @@
           <td class="align-middle"><%= data[i].email%></td>
           <td class="align-middle"><%= data[i].role%></td>
           <td class="align-middle">
-            <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal" href="../users/edit/<%=data[i].id%>">Edit</a>
+            <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal">Edit</a>
             <a class="btn btn-danger delete" onclick="return alert('Are You sure?')" href="../users/delete/<%=data[i].id%>">Delete</a>
           </td>
         </tr>
