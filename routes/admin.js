@@ -45,28 +45,29 @@ module.exports = function () {
   //   }
   // });
 
-  router.post('/admin/users/edit/:userId', isUserLoaded, async (req, res, next) => {
-    let isEnabled = true
-    if(req.body.enabled === true) {
-      console.log("enabled")
-    } else {
-      isEnabled = false
-    }
-    const newValues = {
-      enable: isEnabled,
-      role: req.body.role
-    }
-    try {
-      await User.edit(req.session.session_token, req.params.userId, newValues);
-      log.info(
-        `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userId}`
-      );
-      res.redirect('/');  
-    } catch(error) {
-      next(error);
-    }
-  });
-
+  router.put('/:userId?', isUserLoaded, async (req, res, next) => {
+     log.info("Reached admin.js test"); // DEBUG
+     let isEnabled = true
+     if(req.body.enabled === true) {
+       console.log("enabled")
+     } else {
+       isEnabled = false
+     }
+     const newValues = {
+       enable: isEnabled,
+       role: req.body.role
+     }
+     try {
+       await User.edit(req.session.session_token, req.params.userId, newValues);
+       log.info(
+         `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userId}`
+       );
+       // res.redirect('/');  
+     } catch(error) {
+       next(error);
+     }
+   });
+  
   // function editUser(userID, newValues) {
   //   router.get('/users/edit', isUserLoaded, async (req, res, next) => {
   //     try {

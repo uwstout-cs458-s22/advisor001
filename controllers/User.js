@@ -32,13 +32,12 @@ async function edit(sessionToken, userId, newValues) {
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
   // const response = await request.edit(`users/${userId}`, { 
-  const response = await request.post(`/admin/users/edit/${userId}`, { 
-    newValues: newValues
-  });
+  const response = await request.put(`/${userId}`, newValues);
+  log.info("Reached User.js test"); // DEBUG
   if (response.status === 200 || response.status === 201) {
     const userParms = deSerializeUser(response.data);
     const user = new User(userParms);
-    log.debug(`Advisor API Success: Edited (${response.status}) User ${user.id} (${user.email})`);
+    log.debug(`Advisor API Success: Edited (${response.status}) User ${userId} (${newValues})`);
     return user;
   } else {
     throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
