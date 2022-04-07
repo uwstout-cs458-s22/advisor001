@@ -2,9 +2,9 @@
   <div class="container-fluid">
     <div class="navbar-nav">
       <a class="navbar-brand" href="#">Program Course Advisor</a>
-      <a onclick="checkRole('advise')" class="nav-link <%= group === 'advise' ? 'active' : ''%>" href="#">Advise</a>
-      <a onclick="checkRole('manage')" class="nav-link <%= group === 'manage' ? 'active' : ''%>" href="#">Manage</a>
-      <a onclick="checkRole('admin')" class="nav-link <%= group === 'admin' ? 'active' : ''%>" href="#">Admin</a>
+      <a class="nav-link <%= group === 'advise' ? 'active' : ''%>" href="/advise">Advise</a>
+      <a class="nav-link <%= group === 'manage' ? 'active' : ''%>" href="/manage">Manage</a>
+      <a class="nav-link <%= group === 'admin' ? 'active' : ''%>" href="/admin">Admin</a>
     </div>
     <div class="navbar-nav">
       <span class="navbar-text">
