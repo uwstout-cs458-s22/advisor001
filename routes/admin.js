@@ -45,7 +45,7 @@ module.exports = function () {
   //   }
   // });
 
-  router.post('/users/edit/:userID', isUserLoaded, async (req, res, next) => {
+  router.post('/admin/users/edit/:userId', isUserLoaded, async (req, res, next) => {
     let isEnabled = true
     if(req.body.enabled === true) {
       console.log("enabled")
@@ -57,9 +57,9 @@ module.exports = function () {
       role: req.body.role
     }
     try {
-      await User.edit(req.session.session_token, req.params.userID, newValues);
+      await User.edit(req.session.session_token, req.params.userId, newValues);
       log.info(
-        `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userID}`
+        `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userId}`
       );
       res.redirect('/');  
     } catch(error) {

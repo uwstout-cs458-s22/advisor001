@@ -1,111 +1,130 @@
 <% if (messages.success) { %>
-<div class="alert alert-success" role="alert"><%- messages.success %></div>
-<% } %> <% if (messages.error) { %>
-<div class="alert alert-danger" role="alert"><%- messages.error %></div>
-<% } %>
-
-<!-- Edit User Modal -->
-<div id="editModal" class="modal fade" role="dialog">
-  <div class="modal-dialog modal-content">
-  <!-- Modal Header -->
-    <div class="modal-header">
-      <h4 class="modal-title">Edit User</h4>
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <div class="alert alert-success" role="alert"><%- messages.success %></div>
+  <% } %> <% if (messages.error) { %>
+  <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+  <% } %>
+  
+  <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-pills w-100">
+        <li class="nav-pill active">
+          <a class="nav-link">Users</a>
+        </li>
+        <li class="nav-pill ml-auto">
+          <a class="nav-link active" href="/users/add">Add User</a>
+        </li>
+      </ul>
     </div>
-    <!-- Modal Body -->
-    <div class="modal-body">
-      <form id="editForm" method="POST" action="/admin/users/edit/<%=${userID}%>">
-        <!--User Id -->
-        <div class="row" id="userID"></div>
-        <!-- User Status -->
-        <label for="enabler">Enabled</label>
-        <div class="form-group enabler">
-          <div class="form-check">
-            <input type="radio" class="form-check-input" id="enabled" name="optradio" checked>Active
-            <label class="form-check-label" for="enabled"></label>
+    <div class="card-body">
+      <% data.sort(function(a, b) { var textA = a.email.toUpperCase(); var textB =
+      b.email.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0; });
+      if(data.length) { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Enabled</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th width="200px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i< data.length; i++) { %>
+          <tr>
+            <th scope="row" class="align-middle"><%= data[i].id %></th>
+            <td class="align-middle">
+              <% if (data[i].enable) { %>
+              <span class="badge badge-success">Active</span>
+              <%} else { %>
+              <span class="badge badge-light">Disabled</span>
+              <% } %>
+            </td>
+            <td class="align-middle"><%= data[i].email%></td>
+            <td class="align-middle"><%= data[i].role%></td>
+            <td class="align-middle">
+              <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal-<%=i%>"
+                href="../users/edit/<%=data[i].id%>">Edit</a>
+              <a class="btn btn-danger delete" onclick="return alert('Are You sure?')"
+                href="../users/delete/<%=data[i].id%>">Delete</a>
+            </td>
+          </tr>
+  
+          <!-- Edit User Modal -->
+          <div id="editModal-<%=i%>" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Edit User</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <form id="editForm" method="POST" action="/admin/users/edit/<%=data[i].id%>">
+                  <!--User Id -->
+                  <div class="row form-group ml-auto">
+                    <label for="userId">ID: </label>
+                    <div id="userId" value="<%=data[i].id%>"><%=data[i].id%></div>
+                  </div>
+                  <!-- User Status -->
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" name="enabled" checked="<%=data[i].enable%>">
+                    <label class="form-check-label" for="enabled">User Enabled</label>
+                  </div>
+                  <!-- User Email -->
+                  <div class="form-group">
+                    <label for="inputUserEmail">Email</label>
+                    <input class="form-control" placeholder="<%=data[i].email%>" type="text" name="inputUserEmail" disabled></input>
+                  </div>
+                  <!-- User Role -->
+                  <div class="form-group">
+                    <label for="role">Role</label>
+                    <select class="form-control" name="role" selected="<%=data[i].role%>">
+                      <option class="admin">Admin</option>
+                      <option class="director">Manager</option>
+                      <option class="user">User</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" id="submit" class="btn btn-success" href="/admin/users/edit/<%=data[i].id%>">Save</button>
+                    <button class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
-          <div class="form-check">
-            <input type="radio" class="form-check-input" id="disabled" name="optradio">Disabled
-            <label class="form-check-label" for="disabled"></label>
-          </div>
-        </div>
-        <!-- User Email -->
-        <div class="form-group">
-          <label for="inputUserEmail">Email</label>
-          <input class="form-control" placeholder="" type="text" id="inputUserEmail" disabled> </input>
-        </div>
-        <!-- User Role -->
-        <div class="form-group">
-          <label for="role">Role</label>
-					<select class="form-control" id="role">
-						<option>--Select--</option>
-            <option class="admin">Admin</option>
-            <option class="director">Manager</option>
-            <option class="user">User</option>
-					</select>
-				</div>
-        <!-- Modal Footer -->
-        <div class="form-group">
-          <!-- <button type="submit" class="btn btn-success" href="../users/edit/">Save</button> -->
-          <button type="submit" class="btn btn-success">Save</button>
-          <button class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-      </form>
+          <% } %>
+        </tbody>
+      </table>
+      <% } %>
+  
+      <!-- if result is empty -->
+      <% if(!data.length) { %>
+      <p class="text-center">No Users found!</p>
+      <% } %>
     </div>
   </div>
-</div>
+  
+// <script>
+//   $(document).ready(function() {
+//     $("#submit").on('click', function(this) {
+//       this.preventDefault();
+//       $.ajax({
+//         url: `/users/edit/${userId}`,
+//         type: "POST",
+//         success: function(data){
+//           alert("Successfully submitted.")
+//         }
+//       });
+//     });
+//   });
+// </script>
 
-<div class="card">
-  <div class="card-header">
-    <ul class="nav nav-pills w-100">
-      <li class="nav-pill active">
-        <a class="nav-link">Users</a>
-      </li>
-      <li class="nav-pill ml-auto">
-        <a class="nav-link active" href="/users/add">Add User</a>
-      </li>
-    </ul>
-  </div>
-  <div class="card-body">
-    <% data.sort(function(a, b) { var textA = a.email.toUpperCase(); var textB =
-    b.email.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0; });
-    if(data.length) { %>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Enabled</th>
-          <th scope="col">Email</th>
-          <th scope="col">Role</th>
-          <th width="200px">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(var i = 0; i< data.length; i++) { %>
-        <tr>
-          <th scope="row" class="align-middle"><%= data[i].id %></th>
-          <td class="align-middle">
-            <% if (data[i].enable) { %>
-            <span class="badge badge-success">Active</span>
-            <%} else { %>
-            <span class="badge badge-light">Disabled</span>
-            <% } %>
-          </td>
-          <td class="align-middle"><%= data[i].email%></td>
-          <td class="align-middle"><%= data[i].role%></td>
-          <td class="align-middle">
-            <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal">Edit</a>
-            <a class="btn btn-danger delete" onclick="return alert('Are You sure?')" href="../users/delete/<%=data[i].id%>">Delete</a>
-          </td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
-    <% } %>
-
-    <!-- if result is empty -->
-    <% if(!data.length) { %>
-    <p class="text-center">No Users found!</p>
-    <% } %>
-  </div>
-</div>
+  // <script>
+  //   const form = document.getElementById('editForm');
+  //   form.addEventListener('submit', submitEdit(this));
+  //   function submitEdit(event) {
+  //     console.log(userid.value);
+  //     event.preventDefault();
+  //     const userid = document.getElementById('userId');
+  //     console.log(userid);
+  //   }
+  // </script>
