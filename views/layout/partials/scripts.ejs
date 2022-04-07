@@ -70,27 +70,29 @@
 </script>
 
 <script>
-  //Alert user of their role
-  function checkRole(location) {
-    const role = '<%= role %>';
-    if (location === 'admin') {
-      if (role === 'admin') {
-        window.location.href = `/${location}`;
-      } else {
+  //Alert user of their role if it is incorrect
+  function checkRole() {
+    let page = window.location.pathname;
+    console.log(page);
+    const role = '<%=role %>';
+    console.log(role);
+    if (page === '/admin') {
+      console.log('in admin check');
+      if (role !== 'admin') {
         alert(
           "You can't access this page because your role does not allow it. Please contact your admin with any questions on your permissions."
         );
+        window.location.href = '/advise';
       }
-    } else if (location === 'manage') {
-      if (role === 'admin' || role === 'director') {
-        window.location.href = `/${location}`;
-      } else {
+    } else if (page === '/manage') {
+      console.log('in manage check');
+      if (role === 'user') {
         alert(
           "You can't access this page because your role does not allow it. Please contact your admin with any questions on your permissions."
         );
+        window.location.href = '/advise';
       }
-    } else {
-      window.location.href = `/${location}`;
     }
   }
+  checkRole();
 </script>
