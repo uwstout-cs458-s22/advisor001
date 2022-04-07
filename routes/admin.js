@@ -30,8 +30,8 @@ module.exports = function () {
   router.get('/users/delete/:userID', async (req, res, next) => {
     try {
       const userID = req.params.userID;
-      res.redirect('/admin');
       await User.deleteUser(req.session.session_token, userID);
+      res.redirect('/admin');
     } catch (error) {
       next(error);
     }
