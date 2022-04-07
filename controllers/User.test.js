@@ -184,7 +184,7 @@ describe('User controller tests', () => {
       expect(axios.delete).toHaveBeenCalledWith(
         'users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
       );
-      expect(result).toEqual(undefined);
+      expect(result.status).toEqual(200);
     });
 
     test('delete - Required Parameters Missing', async () => {

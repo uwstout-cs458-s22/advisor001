@@ -128,15 +128,16 @@ describe('Admin Route Tests', () => {
 
     test('User.deleteUser successful route', async () => {
       const data = dataForGetUser(1);
-      User.deleteUser.mockResolvedValueOnce(data);
+      User.deleteUser.mockResolvedValue(data);
       expect(data[0].userId).toBe('user-test-someguid1');
       const response = await request(app).get(`/admin/users/delete/${data[0].userId}`);
-      expect(response.statusCode).not.toBe(404);
+      expect(response.statusCode).toBe(302);
     });
 
     test('User.deleteUser thrown error', async () => {
       const response = await request(app).get(`/admin/users/delete/${undefined}`);
-      expect(response.statusCode).toBe(500);
+      expect(response.body).toStrictEqual({});
+      expect(response.statusCode).toBe(302);
     });
   });
 });

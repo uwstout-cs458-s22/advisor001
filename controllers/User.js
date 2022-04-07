@@ -51,6 +51,7 @@ async function deleteUser(sessionToken, userId) {
   const response = await request.delete(`users/${userId}`);
   if (response.status === 200) {
     log.debug(`User: ${userId} successfully deleted`);
+    return response;
   } else {
     throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.Error}`);
   }
