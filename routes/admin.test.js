@@ -5,6 +5,7 @@ const log = require('loglevel');
 const User = require('../controllers/User');
 const UserModel = require('../models/User');
 const auth = require('../services/auth');
+global.window = { location: { pathname: '/admin' } };
 
 beforeAll(() => {
   log.disableAll();
@@ -13,6 +14,8 @@ beforeAll(() => {
 jest.mock('../controllers/User', () => {
   return {
     fetchAll: jest.fn(),
+    create: jest.fn(),
+    deleteUser: jest.fn(),
   };
 });
 
@@ -41,6 +44,17 @@ jest.mock('../services/auth', () => {
     isUserLoaded: jest.fn(),
   };
 });
+
+function mockUserIsLoggedIn() {
+  auth.isUserLoaded.mockReset();
+  auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
+    req.session = {
+      session_token: 'thisisatoken',
+      user: mockUser,
+    };
+    next();
+  });
+}
 
 function resetMockIsUserLoaded() {
   auth.isUserLoaded.mockImplementation((req, res, next) => {
@@ -121,6 +135,22 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0][0]).toBe('thisisatoken');
       expect(User.fetchAll.mock.calls[0][1]).toBe(0);
       expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('User.deleteUser successful route', async () => {
+      mockUserIsLoggedIn();
+      const data = dataForGetUser(1);
+      User.deleteUser.mockResolvedValue(data[0]);
+      expect(data[0].userId).toBe('user-test-someguid1');
+      const response = await request(app).get(`/admin/users/delete/${data[0].userId}`);
+      expect(response.statusCode).not.toBe(404);
+      // Line 34 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.deleteUser thrown error', async () => {
+      const response = await request(app).get(`/admin/users/delete/${undefined}`);
       expect(response.statusCode).toBe(500);
     });
   });
