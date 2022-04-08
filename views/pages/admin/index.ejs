@@ -113,7 +113,11 @@
     .then(
         console.log('We sent put asynchronously (AJAX)'),
         e.preventDefault(),
-        window.window.location.href = '/admin'
-    )    
+        window.window.location.href = '/admin',
+        //window.window.location.reload(true)
+    ) 
+    .then(
+      window.window.location.reload(true)
+    )  
   }  
 </script>

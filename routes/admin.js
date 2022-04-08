@@ -34,6 +34,7 @@ module.exports = function () {
       log.info(
         `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userId}`
       );
+      res.redirect('/admin');
     } catch(error) {
       next(error);
     }
