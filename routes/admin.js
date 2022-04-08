@@ -3,10 +3,12 @@ const log = require('loglevel');
 const bodyParser = require('body-parser');
 const { isUserLoaded } = require('../services/auth');
 const User = require('../controllers/User');
+// const app = require('../app');
 
 module.exports = function () {
   const router = express.Router();
   router.use(bodyParser.json());
+  router.use(bodyParser.urlencoded( {extended: true }));
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
       // In the future it would be helpful to get an amount of all users in the database and replace the hardcoded value.
@@ -26,15 +28,24 @@ module.exports = function () {
     }
   });
 
-  router.put('/users/edit/:userId', isUserLoaded, async (req, res, next) => {
-    let form = JSON.stringify(req.body)
-    form = JSON.parse(form)
+  router.post('/users/edit/:userId', isUserLoaded, async (req, res, next) => {
+    let isEnabled = true
+    let userRole = req.body.role
+    if (req.body.enable === undefined) {
+      isEnabled = false
+      req.body.enable = false
+    }
+    if (req.body.role === undefined) {
+      userRole = 'user'
+      req.body.role = 'user'
+    }
+    const newValues = {
+      enable : isEnabled,
+      role: userRole
+    }
     try {
-      await User.edit(req.session.session_token, req.params.userId, JSON.stringify(form));
-      log.info(
-        `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userId}`
-      );
-      res.redirect('/admin');
+      await User.edit(req.session.session_token, req.params.userId, newValues);
+      res.redirect(303, '/admin');
     } catch(error) {
       next(error);
     }

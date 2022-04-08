@@ -57,15 +57,15 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
               </div>
               <div class="modal-body">
-                <form id="editForm" method="PUT" action="/admin/users/edit/<%=data[i].userId%>" onsubmit="send(event, this)">
+                <form id="editForm" method="POST" action="/admin/users/edit/<%=data[i].userId%>">
                   <!--User Id -->
                   <div class="row form-group ml-auto">
                     <label for="userId">ID: </label>
-                    <div id="userId" value="<%=data[i].id%>"><%=data[i].id%></div>
+                    <div id="userId" class="ml-1" value="<%=data[i].id%>"><%=data[i].id%></div>
                   </div>
                   <!-- User Status -->
                   <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" name="enabled" checked="<%=data[i].enable%>">
+                    <input type="checkbox" class="form-check-input" name="enable" value="<%=data[i].enable%>" checked disabled>
                     <label class="form-check-label" for="enabled">User Enabled</label>
                   </div>
                   <!-- User Email -->
@@ -77,6 +77,7 @@
                   <div class="form-group">
                     <label for="role">Role</label>
                     <select class="form-control" name="role">
+                      <option value="none" selected disabled hidden>---Select---</option>
                       <option class="admin" value="admin">Admin</option>
                       <option class="director" value="director">Director</option>
                       <option class="user" value="user">User</option>
@@ -101,23 +102,3 @@
       <% } %>
     </div>
   </div>
-
-<script>
-  function send(e, form) {
-    fetch(form.action, { headers: {
-      'Content-Type': 'application/json'
-    }, method:'put', body: JSON.stringify({
-      "enable": form.enabled.checked,
-      "role": form.role.value.toString()
-    })})
-    .then(
-        console.log('We sent put asynchronously (AJAX)'),
-        e.preventDefault(),
-        window.window.location.href = '/admin',
-        //window.window.location.reload(true)
-    ) 
-    .then(
-      window.window.location.reload(true)
-    )  
-  }  
-</script>
