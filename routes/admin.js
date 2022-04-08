@@ -26,76 +26,18 @@ module.exports = function () {
     }
   });
 
-  // Edit user function for Edit User Modal
-  // router.get('/users/edit/:userID', async (req, res, next) => {
-  //   try {
-  //     const userID = req.params.userID
-  //     const Email = req.params.Email
-  //     console.log(userID);
-  //     console.log(Email);
-  //     console.log(req.session.session_token);
-  //     const editedUser = await User.edit(userID, Email);
-  //     // const users = await User.create(req.session.session_token, userID, Email);
-  //     log.info(
-  //       `${req.method} ${req.originalUrl} success: returning edited user ${editedUser}`
-  //     );
-  //     res.redirect('/');
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // });
-
-  router.post('/admin/users/edit/:userId', isUserLoaded, async (req, res, next) => {
-    let isEnabled = true
-    if(req.body.enabled === true) {
-      console.log("enabled")
-    } else {
-      isEnabled = false
-    }
-    const newValues = {
-      enable: isEnabled,
-      role: req.body.role
-    }
+  router.put('/users/edit/:userId', isUserLoaded, async (req, res, next) => {
+    let form = JSON.stringify(req.body)
+    form = JSON.parse(form)
     try {
-      await User.edit(req.session.session_token, req.params.userId, newValues);
+      await User.edit(req.session.session_token, req.params.userId, JSON.stringify(form));
       log.info(
         `${req.method} ${req.originalUrl} success: returning edited user ${req.params.userId}`
       );
-      res.redirect('/');  
     } catch(error) {
       next(error);
     }
   });
-
-  // function editUser(userID, newValues) {
-  //   router.get('/users/edit', isUserLoaded, async (req, res, next) => {
-  //     try {
-  //       await User.edit(req.session.session_token, userID, newValues);
-  //       res.redirect('/admin');
-  //     } catch(error) {
-  //       next(error);
-  //     }
-  //   });
-  // }
-    // const editFormSubmit = document.getElementById('editForm')
-    // editFormSubmit.addEventListener('submit', (event) => {
-    //   event.preventDefault()
-
-    //   // check if user is enabled/disabled
-    //   let isEnabled = true
-    //   if(document.getElementById('enabled') === true) {
-    //     console.log("enabled")
-    //   } else {
-    //     isEnabled = false
-    //   }
-    //   // create newValues object to send
-    //   const newValues = {
-    //     enable: isEnabled,
-    //     role: document.getElementById('role')
-    //   }
-    //   // User.edit(req.session.session_token, document.getElementById('userID'), newValues)
-    //   editUser(document.getElementById('userID'), newValues);
-    // });
 
   return router;
 };

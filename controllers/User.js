@@ -27,14 +27,15 @@ async function create(sessionToken, userId, email) {
   }
 }
 
-async function edit(sessionToken, userId, newValues) {
+async function edit(sessionToken, userId, editValues) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
-  // const response = await request.edit(`users/${userId}`, { 
-  const response = await request.post(`/admin/users/edit/${userId}`, { 
-    newValues: newValues
-  });
+  editValues = JSON.parse(editValues)
+  const response = await request.put(`/users/${userId}`, 
+    editValues
+  );
+  log.info("in user.js")
   if (response.status === 200 || response.status === 201) {
     const userParms = deSerializeUser(response.data);
     const user = new User(userParms);

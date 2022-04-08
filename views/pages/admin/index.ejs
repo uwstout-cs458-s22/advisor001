@@ -43,8 +43,7 @@
             <td class="align-middle"><%= data[i].email%></td>
             <td class="align-middle"><%= data[i].role%></td>
             <td class="align-middle">
-              <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal-<%=i%>"
-                href="../users/edit/<%=data[i].id%>">Edit</a>
+              <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal-<%=i%>">Edit</a>
               <a class="btn btn-danger delete" onclick="return alert('Are You sure?')"
                 href="../users/delete/<%=data[i].id%>">Delete</a>
             </td>
@@ -58,7 +57,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
               </div>
               <div class="modal-body">
-                <form id="editForm" method="POST" action="/admin/users/edit/<%=data[i].id%>">
+                <form id="editForm" method="PUT" action="/admin/users/edit/<%=data[i].userId%>" onsubmit="send(event, this)">
                   <!--User Id -->
                   <div class="row form-group ml-auto">
                     <label for="userId">ID: </label>
@@ -77,14 +76,14 @@
                   <!-- User Role -->
                   <div class="form-group">
                     <label for="role">Role</label>
-                    <select class="form-control" name="role" selected="<%=data[i].role%>">
-                      <option class="admin">Admin</option>
-                      <option class="director">Manager</option>
-                      <option class="user">User</option>
+                    <select class="form-control" name="role">
+                      <option class="admin" value="admin">Admin</option>
+                      <option class="director" value="director">Director</option>
+                      <option class="user" value="user">User</option>
                     </select>
                   </div>
                   <div class="form-group">
-                    <button type="submit" id="submit" class="btn btn-success" href="/admin/users/edit/<%=data[i].id%>">Save</button>
+                    <button type="submit" id="submit" class="btn btn-success">Save</button>
                     <button class="btn btn-danger" data-dismiss="modal">Close</button>
                   </div>
                 </form>
@@ -102,29 +101,19 @@
       <% } %>
     </div>
   </div>
-  
-// <script>
-//   $(document).ready(function() {
-//     $("#submit").on('click', function(this) {
-//       this.preventDefault();
-//       $.ajax({
-//         url: `/users/edit/${userId}`,
-//         type: "POST",
-//         success: function(data){
-//           alert("Successfully submitted.")
-//         }
-//       });
-//     });
-//   });
-// </script>
 
-  // <script>
-  //   const form = document.getElementById('editForm');
-  //   form.addEventListener('submit', submitEdit(this));
-  //   function submitEdit(event) {
-  //     console.log(userid.value);
-  //     event.preventDefault();
-  //     const userid = document.getElementById('userId');
-  //     console.log(userid);
-  //   }
-  // </script>
+<script>
+  function send(e, form) {
+    fetch(form.action, { headers: {
+      'Content-Type': 'application/json'
+    }, method:'put', body: JSON.stringify({
+      "enable": form.enabled.checked,
+      "role": form.role.value.toString()
+    })})
+    .then(
+        console.log('We sent put asynchronously (AJAX)'),
+        e.preventDefault(),
+        window.window.location.href = '/admin'
+    )    
+  }  
+</script>
