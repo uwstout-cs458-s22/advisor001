@@ -44,7 +44,21 @@ async function fetchAll(sessionToken, offset, limit) {
   }
 }
 
+async function deleteUser(sessionToken, userId) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.delete(`users/${userId}`);
+  if (response.status === 200) {
+    log.debug(`User: ${userId} successfully deleted`);
+    return response;
+  } else {
+    throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.Error}`);
+  }
+}
+
 module.exports = {
   create,
   fetchAll,
+  deleteUser,
 };
