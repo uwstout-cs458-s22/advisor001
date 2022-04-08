@@ -13,7 +13,7 @@ async function create(sessionToken, userId, email) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
-  //Requesting to post user info to the database. Send function on click.
+  // Requesting to post user info to the database. Send function on click.
   const response = await request.post('users', {
     email: email,
     userId: userId,
@@ -27,6 +27,7 @@ async function create(sessionToken, userId, email) {
     throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
   }
 }
+
 async function fetchAll(sessionToken, offset, limit) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
