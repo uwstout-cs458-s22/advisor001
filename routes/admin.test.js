@@ -5,6 +5,7 @@ const log = require('loglevel');
 const User = require('../controllers/User');
 const UserModel = require('../models/User');
 const auth = require('../services/auth');
+global.window = { location: { pathname: '/admin' } };
 
 beforeAll(() => {
   log.disableAll();
@@ -13,6 +14,7 @@ beforeAll(() => {
 jest.mock('../controllers/User', () => {
   return {
     fetchAll: jest.fn(),
+    edit: jest.fn(),
   };
 });
 
@@ -41,6 +43,17 @@ jest.mock('../services/auth', () => {
     isUserLoaded: jest.fn(),
   };
 });
+
+function mockUserIsLoggedIn() {
+  auth.isUserLoaded.mockReset();
+  auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
+    req.session = {
+      session_token: 'thisisatoken',
+      user: mockUser,
+    };
+    next();
+  });
+}
 
 function resetMockIsUserLoaded() {
   auth.isUserLoaded.mockImplementation((req, res, next) => {
@@ -122,6 +135,16 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0][1]).toBe(0);
       expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
       expect(response.statusCode).toBe(500);
+    });
+
+    test('User.edit successful route', async () => {
+      mockUserIsLoggedIn();
+      const data = dataForGetUser(1);
+      User.edit.mockResolvedValue(data[0]);
+      expect(data[0].userId).toBe('user-test-someguid1');
+      const response = await request(app).post(`/admin/users/edit/${data[0].userId}`);
+      expect(response.statusCode).toBe(303);
+      expect(global.window.location.pathname).toEqual('/admin');
     });
   });
 });

@@ -162,4 +162,42 @@ describe('User controller tests', () => {
       expect(axios.post).toHaveBeenCalledWith('users', {});
     });
   });
+
+  describe('edit tests', () => {
+    const user = { // Test user values
+      id: 5678,
+      email: 'test3r@testy.com',
+      enable: true,
+      role: 'user',
+      userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+    };
+
+    test('edit - valid edit', async () => {
+      axios.put.mockResolvedValueOnce({ data: user, status: 200 });
+      const result = await User.edit(
+        'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
+        'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+        JSON.stringify(JSON.parse(JSON.stringify(user)))
+      );
+
+      expect(axios.put).toHaveBeenCalledWith( 
+        "/users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c", 
+        "{\"id\":5678,\"email\":\"test3r@testy.com\",\"enable\":true,\"role\":\"user\",\"userId\":\"user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c\"}"
+      );
+      expect(result).toEqual(user);
+    });
+
+    test('edit - error response', async () => {
+      axios.put.mockResolvedValueOnce({ status: 500, data: { Error: 'Internal Database Error' } });
+      await expect( User.edit(
+        'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
+        'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+        JSON.stringify(JSON.parse(JSON.stringify(user))))
+      ).rejects.toThrow('Error 500: Internal Database Error');
+      expect(axios.put).toHaveBeenCalledWith( 
+        "/users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c", 
+        "{\"id\":5678,\"email\":\"test3r@testy.com\",\"enable\":true,\"role\":\"user\",\"userId\":\"user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c\"}"
+      );
+    });
+  });
 });
