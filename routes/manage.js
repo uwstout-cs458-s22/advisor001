@@ -26,16 +26,16 @@ module.exports = function () {
     }
   });
 
-  router.get('/manage/course/add/:newCourse', async (req, res, next) => {
+  router.get('/course/add/', async (req, res, next) => {
     try {
-      // Find way to get newCourse as an object containing all data from the add course modal
-      // Pass newCourse to Course.create
-      const title = 'New Course';
-      const description = 'New Course Description';
-      const prefix = 'New Course Prefix';
-      const suffix = 'New Course Suffix';
-      const credits = 1;
-      await Course.create(req.session.session_token, credits, description, prefix, suffix, title);
+      const course = {
+        prefix: req.body.coursePrefix,
+        suffix: req.body.courseSuffix,
+        title: req.body.courseTitle,
+        description: req.body.courseDescription,
+        credits: req.body.courseCredits,
+      };
+      await Course.create(req.session.session_token, course);
       log.info(`${req.method} ${req.originalUrl} success: successfully added`);
       res.redirect('/manage');
     } catch (error) {

@@ -3,7 +3,6 @@ const log = require('loglevel');
 const { deSerializeCourse } = require('../serializers/Course');
 const Course = require('../models/Course');
 const HttpError = require('http-errors');
-const req = require('express/lib/request');
 
 async function create(sessionToken, course) {
   const request = axios.create({

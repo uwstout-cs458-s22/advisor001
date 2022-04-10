@@ -67,8 +67,10 @@ describe('Course controller tests', () => {
         prefix: 'CS',
         suffix: '123',
         credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
         title: 'Programming 1',
       };
+
       axios.post.mockResolvedValueOnce({ data: courses, status: 201 });
       const result = await Course.create(courses.data);
       expect(axios.post).toHaveBeenCalledWith('course', courses.data);
