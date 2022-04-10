@@ -30,7 +30,12 @@ module.exports = function () {
     try {
       // Find way to get newCourse as an object containing all data from the add course modal
       // Pass newCourse to Course.create
-      await Course.create(req.session.session_token, title, description, prefix, suffix, credits);
+      const title = 'New Course';
+      const description = 'New Course Description';
+      const prefix = 'New Course Prefix';
+      const suffix = 'New Course Suffix';
+      const credits = 1;
+      await Course.create(req.session.session_token, credits, description, prefix, suffix, title);
       log.info(`${req.method} ${req.originalUrl} success: successfully added`);
       res.redirect('/manage');
     } catch (error) {

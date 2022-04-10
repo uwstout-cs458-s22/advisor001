@@ -3,25 +3,20 @@ const log = require('loglevel');
 const { deSerializeCourse } = require('../serializers/Course');
 const Course = require('../models/Course');
 const HttpError = require('http-errors');
+const req = require('express/lib/request');
 
-async function create(sessionToken, title, description, prefix, suffix, credits) {
+async function create(sessionToken, course) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
-  const response = await request.post('course', {
-    title,
-    description,
-    prefix,
-    suffix,
-    credits,
-  });
+  const response = await request.post(`course`, course);
   if (response.status === 200 || response.status === 201) {
     const courseParms = deSerializeCourse(response.data);
-    const course = new Course(courseParms);
+    const courses = new Course(courseParms);
     log.debug(
-      `Advisor API Success: Created (${response.status}) Course ${course.id} (${course.courseName})`
+      `Advisor API Success: Created (${response.status}) Course ${courses.id} (${courses.courseName})`
     );
-    return course;
+    return response;
   } else {
     throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
   }
