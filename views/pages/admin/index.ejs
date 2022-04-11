@@ -1,60 +1,217 @@
-<% if (messages.success) { %>
-<div class="alert alert-success" role="alert"><%- messages.success %></div>
-<% } %> <% if (messages.error) { %>
-<div class="alert alert-danger" role="alert"><%- messages.error %></div>
-<% } %>
-
-<div class="card">
-  <div class="card-header">
-    <ul class="nav nav-pills w-100">
-      <li class="nav-pill active">
-        <a class="nav-link">Users</a>
-      </li>
-      <li class="nav-pill ml-auto">
-        <a class="nav-link active" href="/users/add">Add User</a>
-      </li>
-    </ul>
-  </div>
-  <div class="card-body">
-    <% data.sort(function(a, b) { var textA = a.email.toUpperCase(); var textB =
-    b.email.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0; });
-    if(data.length) { %>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Enabled</th>
-          <th scope="col">Email</th>
-          <th scope="col">Role</th>
-          <th width="200px">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(var i = 0; i< data.length; i++) { %>
-        <tr>
-          <th scope="row" class="align-middle"><%= data[i].id %></th>
-          <td class="align-middle">
-            <% if (data[i].enable) { %>
-            <span class="badge badge-success">Active</span>
-            <%} else { %>
-            <span class="badge badge-light">Disabled</span>
-            <% } %>
-          </td>
-          <td class="align-middle"><%= data[i].email%></td>
-          <td class="align-middle"><%= data[i].role%></td>
-          <td class="align-middle">
-            <a class="btn btn-secondary edit" href="../users/edit/<%=data[i].id%>">Edit</a>
-            <a class="btn btn-danger delete" onclick="return alert('Are You sure?')" href="../users/delete/<%=data[i].id%>">Delete</a>
-          </td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
-    <% } %>
-
-    <!-- if result is empty -->
-    <% if(!data.length) { %>
-    <p class="text-center">No Users found!</p>
-    <% } %>
+<!--Add User modal code-->
+<div class="container" >
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="modal fade" id="addModal" role="dialog">
+        <div class="modal-dialog modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add User</h4>
+              <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <script src="https://js.stytch.com/stytch.js"></script>
+                <div class="App">
+                  <header className="App-header"></header>
+                  <div class="Sign-in-container">
+                    <div id="magic-link">
+                      <div id="advisor-welcome">
+                        <h4>Please enter a @uwstout.edu email.</h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <script>
+                  // Initialize Stytch.js with your public token. You can find this in your Stytch dashboard under API Keys.
+                  var STYTCH_PUBLIC_TOKEN = 'public-token-test-98de2089-b8ab-4de1-9ad1-faf94fa77be5';
+                  var stytch = Stytch(STYTCH_PUBLIC_TOKEN, {
+                    onEvent: (data) => {
+                      if (data.eventData.type === 'USER_EVENT_TYPE') {
+                        try {
+                          fetch('/magic', {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            body: JSON.stringify({
+                              userId: data.eventData.userId,
+                              email: data.eventData.email,
+                            }),
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                          });
+                        } catch (e) {
+                          console.log(e);
+                        }
+                      }
+                    },
+                    onSuccess: (response) => {
+                      // Handle a successfully sent magic link
+                      document.getElementById('advisor-welcome').style.display = 'none';
+                      console.log(response);
+                    },
+                    onError: (response) => {
+                      console.log(response);
+                    },
+                  });
+                  var style = {
+                    fontFamily: '"Helvetica New", Helvetica, sans-serif',
+                    width: '321px',
+                    primaryColor: '#0577CA',
+                    hideHeaderText: true,
+                  };
+                  var magicLinkDefaults = {
+                    products: ['emailMagicLinks'],
+                    emailMagicLinksOptions: {
+                      loginRedirectURL: location.origin + '/authenticate',
+                      loginExpirationMinutes: 30,
+                      signupRedirectURL: location.origin + '/authenticate',
+                      signupExpirationMinutes: 30,
+                    },
+                  };
+                  stytch.mount({
+                    elementId: '#magic-link',
+                    style: style,
+                    loginOrSignupView: magicLinkDefaults,
+                  });
+                </script>
+              </form>
+            </div>
+          </div>
+      </div>
+    </div>
   </div>
 </div>
+</div>
+
+<head>
+  <!--JQuery Table Scripts -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+</head>
+
+<% if (messages.success) { %>
+  <div class="alert alert-success" role="alert"><%- messages.success %></div>
+  <% } %> <% if (messages.error) { %>
+  <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+  <% } %>
+  
+  <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-pills w-100">
+        <li class="nav-pill active">
+          <a class="nav-link">Users</a>
+        </li>
+        <li class="nav-pill ml-auto">
+          <a class="btn btn-secondary add" data-toggle="modal" data-target="#addModal" href="/users/addUser">Add
+            User</a>
+        </li>
+      </ul>
+    </div>
+    <div class="card-body">
+      <% 
+      if(data.length) { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Enabled</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th width="200px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i< data.length; i++) { %>
+          <tr>
+            <th scope="row" class="align-middle"><%= data[i].id %></th>
+            <td class="align-middle">
+              <% if (data[i].enable) { %>
+              <span class="badge badge-success">Active</span>
+              <%} else { %>
+              <span class="badge badge-light">Disabled</span>
+              <% } %>
+            </td>
+            <td class="align-middle"><%= data[i].email%></td>
+            <td class="align-middle"><%= data[i].role%></td>
+            <td class="align-middle">
+              <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal-<%=i%>">Edit</a>
+              <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="/admin/users/delete/<%=data[i].userId%>" >Delete</a>
+            </td>
+          </tr>
+  
+          <!-- Edit User Modal -->
+          <div id="editModal-<%=i%>" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Edit User</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <form id="editForm" method="POST" action="/admin/users/edit/<%=data[i].userId%>">
+                  <!--User Id -->
+                  <div class="row form-group ml-auto">
+                    <label for="userId">ID: </label>
+                    <div id="userId" class="ml-1" value="<%=data[i].id%>"><%=data[i].id%></div>
+                  </div>
+                  <!-- User Status -->
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="enabledCheck" name="enabled" placeholder="">
+                    <label class="form-check-label" for="enabled">User Enabled</label>
+                  </div>
+                  <!-- User Email -->
+                  <div class="form-group">
+                    <label for="inputUserEmail">Email</label>
+                    <input class="form-control" placeholder="<%=data[i].email%>" type="text" name="inputUserEmail" disabled></input>
+                  </div>
+                  <!-- User Role -->
+                  <div class="form-group">
+                    <label for="role">Role</label>
+                    <select class="form-control" name="role">
+                      <option class="user" value="user">User</option>
+                      <option class="director" value="director">Director</option>
+                      <option class="admin" value="admin">Admin</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" id="submit" class="btn btn-success">Save</button>
+                    <button class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </tbody>
+      </table>
+      <% } %>
+  
+      <!-- if result is empty -->
+      <% if(!data.length) { %>
+      <p class="text-center">No Users found!</p>
+      <% } %>
+    </div>
+  </div>
+          </div>
+          <div>
+          </div>
+
+          <script>
+            //Adding Table pages, search bar, and sorting using JQuery  
+            $(document).ready(function () {
+              $('#table-id').DataTable();
+            });
+          </script>
