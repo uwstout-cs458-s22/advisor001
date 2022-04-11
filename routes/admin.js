@@ -8,7 +8,7 @@ const User = require('../controllers/User');
 module.exports = function () {
   const router = express.Router();
   router.use(bodyParser.json());
-  router.use(bodyParser.urlencoded( {extended: true }));
+  router.use(bodyParser.urlencoded({ extended: true }));
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
       // In the future it would be helpful to get an amount of all users in the database and replace the hardcoded value.
@@ -29,24 +29,21 @@ module.exports = function () {
   });
 
   router.post('/users/edit/:userId', isUserLoaded, async (req, res, next) => {
-    let isEnabled = true
-    let userRole = req.body.role
-    if (req.body.enable === undefined) {
-      isEnabled = false
-      req.body.enable = false
+    let isEnabled;
+    if (Boolean(req.body.enabled) === true) {
+      isEnabled = 'true';
+    } else {
+      isEnabled = 'false';
     }
-    if (req.body.role === undefined) {
-      userRole = 'user'
-      req.body.role = 'user'
-    }
+    const userRole = String(req.body.role);
     const newValues = {
-      enable : isEnabled,
-      role: userRole
-    }
+      enable: isEnabled,
+      role: userRole,
+    };
     try {
       await User.edit(req.session.session_token, req.params.userId, newValues);
       res.redirect(303, '/admin');
-    } catch(error) {
+    } catch (error) {
       next(error);
     }
   });
