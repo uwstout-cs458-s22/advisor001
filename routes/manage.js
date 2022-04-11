@@ -16,7 +16,7 @@ module.exports = function () {
         template: 'index',
         email: req.session.user.email,
         role: req.session.user.role,
-        enabled: req.session.user.enabled,
+        enable: req.session.user.enable,
         data: courses,
       });
       log.info(

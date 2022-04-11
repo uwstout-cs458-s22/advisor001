@@ -70,34 +70,7 @@
 </script>
 
 <script>
-  //Alert user of their role
-  function checkRole(location) {
-    const role = '<%= role %>';
-    if (location === 'admin') {
-      if (role === 'admin') {
-        window.location.href = `/${location}`;
-      } else {
-        alert(
-          "You can't access this page because your role does not allow it. Please contact your admin with any questions on your permissions."
-        );
-      }
-    } else if (location === 'manage') {
-      if (role === 'admin' || role === 'director') {
-        window.location.href = `/${location}`;
-      } else {
-        alert(
-          "You can't access this page because your role does not allow it. Please contact your admin with any questions on your permissions."
-        );
-      }
-    } else {
-      window.location.href = `/${location}`;
-    }
-  }
-</script>
-
-<script>
   //Check if user is not enabled. If they are not, redirect them to the login page and alert them of their status
-  //This is outside of a function so that it will run every time the page is refreshed
   const enabled = '<%= enable %>';
   if (enabled === 'false') {
     window.location.href = '/logout';
@@ -112,6 +85,9 @@
       window.location.href = '/logout';
     }
   };
+</script>
+
+<script>
   //Alert user of their role if it is incorrect
   function checkRole() {
     let page = window.location.pathname;
