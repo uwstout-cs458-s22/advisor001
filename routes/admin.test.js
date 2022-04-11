@@ -122,8 +122,8 @@ describe('Admin Route Tests', () => {
 
       // check the table contents
       for (let i = 0; i < rows.length; i++) {
-        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].email);
-        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].role);
+        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toContain(data[i].email);
+        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toContain(data[i].role);
       }
     });
 
