@@ -62,7 +62,7 @@ describe('Course controller tests', () => {
       expect(axios.get).toHaveBeenCalledWith('course?limit=100&offset=0');
     });
   });
-  //Delete Course Tests
+  // Delete Course Tests
   describe('delete tests', () => {
     test('delete - valid delete', async () => {
       const Courses = {

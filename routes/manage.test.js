@@ -126,10 +126,9 @@ describe('Manage Route Tests', () => {
     });
 
     test('Course.deleteCourse successful route', async () => {
-      //mockUserIsLoggedIn();
       const data = dataForGetCourse(2,1);
       Course.deleteCourse.mockResolvedValue(data[0]);
-      //id is being set by value in function, which is created from index + offset
+      // Course id is being set by value in function, which is created from index + offset
       expect(data[0].id).toBe("2");
       expect(data[1].id).toBe("3");
       const response = await request(app).get(`/manage/course/delete/${data[0].id}`);
