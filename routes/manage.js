@@ -43,5 +43,23 @@ module.exports = function () {
     }
   });
 
+  // router.put edit course
+  router.put('/course/edit/:id', async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const course = {
+        prefix: String(req.body.coursePrefix),
+        suffix: String(req.body.courseSuffix),
+        credits: Number(req.body.courseCredits),
+        description: String(req.body.courseDescription),
+        title: String(req.body.courseTitle),
+      };
+      await Course.update(req.session.session_token, id, course);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return router;
 };

@@ -38,7 +38,25 @@ async function fetchAll(sessionToken, offset, limit) {
   }
 }
 
+async function edit(sessionToken, id, course) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.put(`course/${id}`, course);
+  if (response.status === 200) {
+    const courseParms = deSerializeCourse(response.data);
+    const courses = new Course(courseParms);
+    log.debug(
+      `Advisor API Success: Edited (${response.status}) Course ${courses.id} (${courses.courseName})`
+    );
+    return response;
+  } else {
+    throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.error.message}`);
+  }
+}
+
 module.exports = {
   fetchAll,
   create,
+  edit,
 };

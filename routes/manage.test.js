@@ -139,5 +139,13 @@ describe('Manage Route Tests', () => {
       const response = await request(app).post('/manage/course/add/');
       expect(response.statusCode).toBe(500);
     });
+
+    test('edit course success', async () => {
+      // TODO: mock the edit call
+    });
+
+    test('edit course failure', async () => {
+      // TODO: mock the edit call
+    });
   });
 });
