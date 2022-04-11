@@ -7,6 +7,7 @@ const Course = require('../controllers/Course');
 module.exports = function () {
   const router = express.Router();
   router.use(bodyParser.json());
+  router.use(bodyParser.urlencoded({ extended: true }));
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
@@ -26,15 +27,18 @@ module.exports = function () {
     }
   });
 
-  router.get('/course/add/', async (req, res, next) => {
+  router.post('/course/add/', async (req, res, next) => {
     try {
       const course = {
-        prefix: req.body.coursePrefix,
-        suffix: req.body.courseSuffix,
-        title: req.body.courseTitle,
-        description: req.body.courseDescription,
-        credits: req.body.courseCredits,
+        prefix: String(req.body.coursePrefix),
+        suffix: String(req.body.courseSuffix),
+        credits: Number(req.body.courseCredits),
+        description: String(req.body.courseDescription),
+        title: String(req.body.courseTitle),
       };
+      log.info(
+        `${req.method} ${req.originalUrl} success: adding course ${course.prefix} ${course.suffix} ${course.title} ${course.description} ${course.credits}`
+      );
       await Course.create(req.session.session_token, course);
       log.info(`${req.method} ${req.originalUrl} success: successfully added`);
       res.redirect('/manage');

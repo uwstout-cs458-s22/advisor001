@@ -5,6 +5,7 @@ const CourseModel = require('../models/Course');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
 const HttpError = require('http-errors');
+const req = require('express/lib/request');
 
 beforeAll(() => {
   log.disableAll();
@@ -32,6 +33,7 @@ const mockCourse = new CourseModel({
   prefix: 'COURSE',
   suffix: '000',
   title: 'TITLE',
+  description: 'DESCRIPTION',
   credits: 3,
 });
 
@@ -126,9 +128,16 @@ describe('Manage Route Tests', () => {
     });
 
     test('create course success', async () => {
-      const data = dataForGetCourse(1);
-      Course.fetchAll.mockResolvedValueOnce(data[0]);
-      const response = await request(app).post('/manage/course/add/');
+      // mock the create function
+      Course.create.mockResolvedValueOnce(mockCourse);
+      const response = await request(app).post('/manage/course/add/').send({
+        coursePrefix: 'COURSE',
+        courseSuffix: '000',
+        courseCredits: 3,
+        courseDescription: 'DESCRIPTION',
+        courseTitle: 'TITLE',
+      });
+      expect(response.body).toBe('');
       expect(response.statusCode).toBe(201);
     });
 
