@@ -200,4 +200,41 @@ describe('User controller tests', () => {
       );
     });
   });
+
+  describe('delete tests', () => {
+    test('delete - valid delete', async () => {
+      const user = {
+        id: 4567,
+        email: 'barb26@example.com',
+        enable: true,
+        role: 'admin',
+        userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+      };
+      axios.delete.mockResolvedValueOnce({
+        data: user,
+        status: 200,
+      });
+      const result = await User.deleteUser(
+        'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
+        'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
+      );
+
+      expect(axios.delete).toHaveBeenCalledWith(
+        'users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
+      );
+      expect(result.status).toEqual(200);
+    });
+
+    test('delete - Required Parameters Missing', async () => {
+      axios.delete.mockResolvedValueOnce({
+        status: 400,
+        data: { Error: 'Required Parameters Missing' },
+      });
+
+      await expect(
+        User.deleteUser('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', undefined)
+      ).rejects.toThrow('Error 400: Required Parameters Missing');
+      expect(axios.delete).toHaveBeenCalledWith('users/' + undefined);
+    });
+  });
 });

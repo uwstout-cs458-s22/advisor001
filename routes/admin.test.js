@@ -15,6 +15,8 @@ jest.mock('../controllers/User', () => {
   return {
     fetchAll: jest.fn(),
     edit: jest.fn(),
+    create: jest.fn(),
+    deleteUser: jest.fn(),
   };
 });
 
@@ -121,8 +123,8 @@ describe('Admin Route Tests', () => {
 
       // check the table contents
       for (let i = 0; i < rows.length; i++) {
-        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].email);
-        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].role);
+        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toContain(data[i].email);
+        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toContain(data[i].role);
       }
     });
 
@@ -136,7 +138,6 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
       expect(response.statusCode).toBe(500);
     });
-
     test('User.edit successful route disabled', async () => {
       mockUserIsLoggedIn();
       const data = dataForGetUser(1);
@@ -157,6 +158,22 @@ describe('Admin Route Tests', () => {
         .send({ enabled: true });
       expect(response.statusCode).toBe(303);
       expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.deleteUser successful route', async () => {
+      mockUserIsLoggedIn();
+      const data = dataForGetUser(1);
+      User.deleteUser.mockResolvedValue(data[0]);
+      expect(data[0].userId).toBe('user-test-someguid1');
+      const response = await request(app).get(`/admin/users/delete/${data[0].userId}`);
+      expect(response.statusCode).not.toBe(404);
+      // Line 34 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.deleteUser thrown error', async () => {
+      const response = await request(app).get(`/admin/users/delete/${undefined}`);
+      expect(response.statusCode).toBe(500);
     });
   });
 });

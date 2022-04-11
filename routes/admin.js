@@ -18,6 +18,7 @@ module.exports = function () {
         group: 'admin',
         template: 'index',
         email: req.session.user.email,
+        role: req.session.user.role,
         data: users,
       });
       log.info(
@@ -47,6 +48,15 @@ module.exports = function () {
       next(error);
     }
   });
-
+  
+  router.get('/users/delete/:userID', async (req, res, next) => {
+    try {
+      const userID = req.params.userID;
+      await User.deleteUser(req.session.session_token, userID);
+      res.redirect('/admin');
+    } catch (error) {
+      next(error);
+    }
+  });
   return router;
 };
