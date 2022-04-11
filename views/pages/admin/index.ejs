@@ -116,13 +116,13 @@
           <a class="nav-link">Users</a>
         </li>
         <li class="nav-pill ml-auto">
-          <a class="nav-link active" href="/users/add">Add User</a>
+          <a class="btn btn-secondary add" data-toggle="modal" data-target="#addModal" href="/users/addUser">Add
+            User</a>
         </li>
       </ul>
     </div>
     <div class="card-body">
-      <% data.sort(function(a, b) { var textA = a.email.toUpperCase(); var textB =
-      b.email.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0; });
+      <% 
       if(data.length) { %>
       <table class="table">
         <thead>
@@ -146,11 +146,10 @@
               <% } %>
             </td>
             <td class="align-middle"><%= data[i].email%></td>
-            <td class="align-middle" id="role"><%= data[i].role%></td>
+            <td class="align-middle"><%= data[i].role%></td>
             <td class="align-middle">
               <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editModal-<%=i%>">Edit</a>
-              <a class="btn btn-danger delete" onclick="return alert('Are You sure?')"
-                href="../users/delete/<%=data[i].id%>">Delete</a>
+              <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="/admin/users/delete/<%=data[i].userId%>" >Delete</a>
             </td>
           </tr>
   
@@ -170,7 +169,7 @@
                   </div>
                   <!-- User Status -->
                   <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" name="enabled" value="<%=data[i].enable%>" checked>
+                    <input type="checkbox" class="form-check-input" id="enabledCheck" name="enabled" placeholder="">
                     <label class="form-check-label" for="enabled">User Enabled</label>
                   </div>
                   <!-- User Email -->
@@ -181,14 +180,10 @@
                   <!-- User Role -->
                   <div class="form-group">
                     <label for="role">Role</label>
-                    <script> 
-                      document.getElementById("sel").value = document.getElementById("role").innerHTML;
-                    </script>
-                    <select class="form-control" name="role" id="sel">
-                      
-                      <option class="admin" value="admin">Admin</option>
-                      <option class="director" value="director">Director</option>
+                    <select class="form-control" name="role">
                       <option class="user" value="user">User</option>
+                      <option class="director" value="director">Director</option>
+                      <option class="admin" value="admin">Admin</option>
                     </select>
                   </div>
                   <div class="form-group">
@@ -210,70 +205,6 @@
       <% } %>
     </div>
   </div>
-<div class="alert alert-success" role="alert"><%- messages.success %></div>
-<% } %> <% if (messages.error) { %>
-<div class="alert alert-danger" role="alert"><%- messages.error %></div>
-<% } %>
-
-
-        <div class="card">
-          <div class="card-header">
-            <ul class="nav nav-pills w-100">
-              <li class="nav-pill active">
-                <a class="nav-link">Users</a>
-              </li>
-              <li class="nav-pill ml-auto">
-                <a class="btn btn-secondary add" data-toggle="modal" data-target="#addModal" href="/users/addUser">Add
-                  User</a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="card-body">
-            <% if(data.length) { %>
-              <table class="table" id="table-id">
-                <thead>
-                  <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Enabled</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Role</th>
-                    <th width="200px">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for(var i=0; i< data.length; i++) { %>
-                    <tr>
-                      <th scope="row" class="align-middle">
-                        <%= data[i].id %>
-                      </th>
-                      <td class="align-middle">
-                        <% if (data[i].enable) { %>
-                          <span class="badge badge-success">Active</span>
-                          <%} else { %>
-                            <span class="badge badge-light">Disabled</span>
-                            <% } %>
-                      </td>
-                      <td class="align-middle">
-                        <%= data[i].email%>
-                      </td>
-                      <td class="align-middle">
-                        <%= data[i].role%>
-                      </td>
-                      <td class="align-middle">
-                        <a class="btn btn-secondary edit" href="../users/edit/<%=data[i].id%>">Edit</a>
-                        <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="/admin/users/delete/<%=data[i].userId%>" >Delete</a>
-                      </td>
-                    </tr>
-                    <% } %>
-                </tbody>
-              </table>
-              <% } %>
-
-                <!-- if result is empty -->
-                <% if(!data.length) { %>
-                  <p class="text-center">No Users found!</p>
-                  <% } %>
           </div>
           <div>
           </div>
