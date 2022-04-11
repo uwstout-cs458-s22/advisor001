@@ -36,11 +36,7 @@ module.exports = function () {
         description: String(req.body.courseDescription),
         title: String(req.body.courseTitle),
       };
-      log.info(
-        `${req.method} ${req.originalUrl} success: adding course ${course.prefix} ${course.suffix} ${course.title} ${course.description} ${course.credits}`
-      );
       await Course.create(req.session.session_token, course);
-      log.info(`${req.method} ${req.originalUrl} success: successfully added`);
       res.redirect('/manage');
     } catch (error) {
       next(error);

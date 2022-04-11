@@ -5,7 +5,6 @@ const CourseModel = require('../models/Course');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
 const HttpError = require('http-errors');
-const req = require('express/lib/request');
 
 beforeAll(() => {
   log.disableAll();
@@ -79,6 +78,8 @@ describe('Manage Route Tests', () => {
   beforeEach(() => {
     Course.fetchAll.mockReset();
     Course.fetchAll.mockResolvedValue(null);
+    Course.create.mockReset();
+    Course.create.mockResolvedValue(null);
     resetMockIsUserLoaded();
   });
 
@@ -128,17 +129,9 @@ describe('Manage Route Tests', () => {
     });
 
     test('create course success', async () => {
-      // mock the create function
-      Course.create.mockResolvedValueOnce(mockCourse);
-      const response = await request(app).post('/manage/course/add/').send({
-        coursePrefix: 'COURSE',
-        courseSuffix: '000',
-        courseCredits: 3,
-        courseDescription: 'DESCRIPTION',
-        courseTitle: 'TITLE',
-      });
-      expect(response.body).toBe('');
-      expect(response.statusCode).toBe(201);
+      Course.create.mockResolvedValueOnce({});
+      const response = await request(app).post(`/manage/course/add/`);
+      expect(response.statusCode).not.toBe(404);
     });
 
     test('create course failure', async () => {
