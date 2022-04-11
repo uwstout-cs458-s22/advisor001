@@ -43,18 +43,17 @@ module.exports = function () {
     }
   });
 
-  // router.put edit course
-  router.put('/course/edit/:id', async (req, res, next) => {
+  router.post('/course/edit/:id', async (req, res, next) => {
     try {
       const id = Number(req.params.id);
       const course = {
-        prefix: String(req.body.coursePrefix),
-        suffix: String(req.body.courseSuffix),
-        credits: Number(req.body.courseCredits),
-        description: String(req.body.courseDescription),
-        title: String(req.body.courseTitle),
+        prefix: String(req.body.editPrefix),
+        suffix: String(req.body.editSuffix),
+        credits: Number(req.body.editCredits),
+        description: String(req.body.editDescription),
+        title: String(req.body.editTitle),
       };
-      await Course.update(req.session.session_token, id, course);
+      await Course.edit(req.session.session_token, id, course);
       res.redirect('/manage');
     } catch (error) {
       next(error);
