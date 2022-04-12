@@ -113,7 +113,7 @@ describe('Manage Route Tests', () => {
       const doc = new JSDOM(response.text).window.document;
 
       // check the main navbar
-      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('#');
+      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/manage');
 
       // count the rows
       const rows = doc.querySelectorAll('.card-body>table>tbody>tr');

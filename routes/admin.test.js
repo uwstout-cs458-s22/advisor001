@@ -5,6 +5,7 @@ const log = require('loglevel');
 const User = require('../controllers/User');
 const UserModel = require('../models/User');
 const auth = require('../services/auth');
+global.window = { location: { pathname: '/admin' } };
 
 beforeAll(() => {
   log.disableAll();
@@ -13,6 +14,9 @@ beforeAll(() => {
 jest.mock('../controllers/User', () => {
   return {
     fetchAll: jest.fn(),
+    edit: jest.fn(),
+    create: jest.fn(),
+    deleteUser: jest.fn(),
   };
 });
 
@@ -41,6 +45,17 @@ jest.mock('../services/auth', () => {
     isUserLoaded: jest.fn(),
   };
 });
+
+function mockUserIsLoggedIn() {
+  auth.isUserLoaded.mockReset();
+  auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
+    req.session = {
+      session_token: 'thisisatoken',
+      user: mockUser,
+    };
+    next();
+  });
+}
 
 function resetMockIsUserLoaded() {
   auth.isUserLoaded.mockImplementation((req, res, next) => {
@@ -97,7 +112,7 @@ describe('Admin Route Tests', () => {
       const doc = new JSDOM(response.text).window.document;
 
       // check the main navbar
-      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('#');
+      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/admin');
       expect(doc.querySelector('.navbar-nav>.navbar-text').innerHTML).toContain(
         'master@uwstout.edu'
       );
@@ -108,8 +123,8 @@ describe('Admin Route Tests', () => {
 
       // check the table contents
       for (let i = 0; i < rows.length; i++) {
-        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].email);
-        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].role);
+        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toContain(data[i].email);
+        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toContain(data[i].role);
       }
     });
 
@@ -121,6 +136,43 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0][0]).toBe('thisisatoken');
       expect(User.fetchAll.mock.calls[0][1]).toBe(0);
       expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
+      expect(response.statusCode).toBe(500);
+    });
+    test('User.edit successful route disabled', async () => {
+      mockUserIsLoggedIn();
+      const data = dataForGetUser(1);
+      User.edit.mockResolvedValue(data[0]);
+      expect(data[0].userId).toBe('user-test-someguid1');
+      const response = await request(app).post(`/admin/users/edit/${data[0].userId}`);
+      expect(response.statusCode).toBe(303);
+      expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.edit successful route enabled', async () => {
+      mockUserIsLoggedIn();
+      const data = dataForGetUser(1);
+      User.edit.mockResolvedValue(data[0]);
+      expect(data[0].userId).toBe('user-test-someguid1');
+      const response = await request(app)
+        .post(`/admin/users/edit/${data[0].userId}`)
+        .send({ enabled: true });
+      expect(response.statusCode).toBe(303);
+      expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.deleteUser successful route', async () => {
+      mockUserIsLoggedIn();
+      const data = dataForGetUser(1);
+      User.deleteUser.mockResolvedValue(data[0]);
+      expect(data[0].userId).toBe('user-test-someguid1');
+      const response = await request(app).get(`/admin/users/delete/${data[0].userId}`);
+      expect(response.statusCode).not.toBe(404);
+      // Line 34 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.deleteUser thrown error', async () => {
+      const response = await request(app).get(`/admin/users/delete/${undefined}`);
       expect(response.statusCode).toBe(500);
     });
   });
