@@ -44,5 +44,18 @@ module.exports = function () {
     }
   });
 
+  router.get('/course/delete/:id', async (req, res, next) => {
+    try {
+      const CourseId = req.params.id;
+      await Course.deleteCourse(req.session.session_token, CourseId);
+      const id = req.params.id;
+      await Course.deleteCourse(req.session.session_token, id);
+      log.info(`${req.method} ${req.originalUrl} success: successfully deleted and rerouted`);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return router;
 };
