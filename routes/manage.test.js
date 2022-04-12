@@ -156,7 +156,8 @@ describe('Manage Route Tests', () => {
   
     test('Course.deleteCourse thrown error', async () => {
       const response = await request(app).get(`/manage/course/delete/${undefined}`);
-     });
+      expect(response.statusCode).toBe(500);
+    });
   });
 });
 
