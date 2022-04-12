@@ -73,7 +73,7 @@
           <td class="align-middle"><%= data[i].credits%></td>
           <td class="align-middle">
             <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editCourseModal-<%=i%>">Edit</a>
-            <a class="btn btn-danger delete">Delete</a>
+            <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="/manage/course/delete/<%=data[i].id%>" >Delete</a>
           </td>
         </tr>
         

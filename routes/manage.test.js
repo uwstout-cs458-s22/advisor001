@@ -5,6 +5,7 @@ const CourseModel = require('../models/Course');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
 const HttpError = require('http-errors');
+global.window = { location: { pathname: '/manage' } };
 
 beforeAll(() => {
   log.disableAll();
@@ -15,6 +16,7 @@ jest.mock('../controllers/Course', () => {
     fetchAll: jest.fn(),
     create: jest.fn(),
     edit: jest.fn(),
+    deleteCourse: jest.fn(),
   };
 });
 
@@ -159,6 +161,23 @@ describe('Manage Route Tests', () => {
       const data = dataForGetCourse(1);
       Course.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
       const response = await request(app).post(`/manage/course/edit/${data[0].id}`);
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Course.deleteCourse successful route', async () => {
+      const data = dataForGetCourse(2, 1);
+      Course.deleteCourse.mockResolvedValue(data[0]);
+      // Course id is being set by value in function, which is created from index + offset
+      expect(data[0].id).toBe('2');
+      expect(data[1].id).toBe('3');
+      const response = await request(app).get(`/manage/course/delete/${data[0].id}`);
+      expect(response.statusCode).not.toBe(404);
+      // Line 34 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/manage');
+    });
+
+    test('Course.deleteCourse thrown error', async () => {
+      const response = await request(app).get(`/manage/course/delete/${undefined}`);
       expect(response.statusCode).toBe(500);
     });
   });

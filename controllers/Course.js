@@ -55,8 +55,22 @@ async function edit(sessionToken, id, course) {
   }
 }
 
+async function deleteCourse(sessionToken, id) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.delete(`course/${id}`);
+  if (response.status === 200) {
+    log.debug(`Course: ${id} successfully deleted`);
+    return response;
+  } else {
+    throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.Error}`);
+  }
+}
+
 module.exports = {
   fetchAll,
   create,
   edit,
+  deleteCourse,
 };

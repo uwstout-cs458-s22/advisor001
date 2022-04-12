@@ -88,7 +88,7 @@ describe('Course controller tests', () => {
     });
   });
 
-  describe('edittests', () => {
+  describe('edit tests', () => {
     test('edit course - happy path', async () => {
       const courses = {
         prefix: 'CS',
@@ -112,6 +112,39 @@ describe('Course controller tests', () => {
       });
       await expect(Course.edit({})).rejects.toThrow('Advisor API Error 500: Internal Server Error');
       expect(axios.put).toHaveBeenCalledWith(`course/${undefined}`, undefined);
+    });
+  });
+
+  describe('delete tests', () => {
+    test('delete - valid delete', async () => {
+      const Courses = {
+        id: '1',
+        prefix: 'CS',
+        suffix: '405',
+        credits: 3,
+        title: 'Computer Science',
+      };
+      axios.delete.mockResolvedValueOnce({
+        data: Courses,
+        status: 200,
+      });
+
+      const result = await Course.deleteCourse('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', '1');
+
+      expect(axios.delete).toHaveBeenCalledWith('course/1');
+      expect(result.status).toEqual(200);
+    });
+
+    test('delete - Required Parameters Missing', async () => {
+      axios.delete.mockResolvedValueOnce({
+        status: 400,
+        data: { Error: 'Required Parameters Missing' },
+      });
+
+      await expect(
+        Course.deleteCourse('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', undefined)
+      ).rejects.toThrow('Error 400: Required Parameters Missing');
+      expect(axios.delete).toHaveBeenCalledWith('course/' + undefined);
     });
   });
 });
