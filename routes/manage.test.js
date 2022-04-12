@@ -13,6 +13,7 @@ beforeAll(() => {
 jest.mock('../controllers/Course', () => {
   return {
     fetchAll: jest.fn(),
+    create: jest.fn(),
   };
 });
 
@@ -31,6 +32,7 @@ const mockCourse = new CourseModel({
   prefix: 'COURSE',
   suffix: '000',
   title: 'TITLE',
+  description: 'DESCRIPTION',
   credits: 3,
 });
 
@@ -62,6 +64,7 @@ function dataForGetCourse(rows, offset = 0) {
       prefix: `COURSE`,
       suffix: `${value}`,
       title: 'TITLE',
+      description: 'DESCRIPTION',
       credits: `${value}`,
     };
     data.push(new CourseModel(params));
@@ -75,6 +78,8 @@ describe('Manage Route Tests', () => {
   beforeEach(() => {
     Course.fetchAll.mockReset();
     Course.fetchAll.mockResolvedValue(null);
+    Course.create.mockReset();
+    Course.create.mockResolvedValue(null);
     resetMockIsUserLoaded();
   });
 
@@ -121,6 +126,18 @@ describe('Manage Route Tests', () => {
         expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].suffix);
         expect(rows[i].querySelector('td:nth-child(5)').innerHTML).toBe(data[i].credits);
       }
+    });
+
+    test('create course success', async () => {
+      Course.create.mockResolvedValueOnce({});
+      const response = await request(app).post(`/manage/course/add/`);
+      expect(response.statusCode).not.toBe(404);
+    });
+
+    test('create course failure', async () => {
+      Course.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post('/manage/course/add/');
+      expect(response.statusCode).toBe(500);
     });
   });
 });
