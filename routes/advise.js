@@ -13,6 +13,7 @@ module.exports = function () {
       template: 'index',
       email: req.session.user.email,
       role: req.session.user.role,
+      enable: req.session.user.enable,
     });
     log.info(`${req.method} ${req.originalUrl} success: rendering advisement page`);
   });
