@@ -5,6 +5,7 @@ const CourseModel = require('../models/Course');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
 const HttpError = require('http-errors');
+global.window = { location: { pathname: '/manage' } };
 
 beforeAll(() => {
   log.disableAll();
@@ -13,6 +14,9 @@ beforeAll(() => {
 jest.mock('../controllers/Course', () => {
   return {
     fetchAll: jest.fn(),
+    create: jest.fn(),
+    edit: jest.fn(),
+    deleteCourse: jest.fn(),
   };
 });
 
@@ -31,6 +35,7 @@ const mockCourse = new CourseModel({
   prefix: 'COURSE',
   suffix: '000',
   title: 'TITLE',
+  description: 'DESCRIPTION',
   credits: 3,
 });
 
@@ -62,6 +67,7 @@ function dataForGetCourse(rows, offset = 0) {
       prefix: `COURSE`,
       suffix: `${value}`,
       title: 'TITLE',
+      description: 'DESCRIPTION',
       credits: `${value}`,
     };
     data.push(new CourseModel(params));
@@ -75,6 +81,8 @@ describe('Manage Route Tests', () => {
   beforeEach(() => {
     Course.fetchAll.mockReset();
     Course.fetchAll.mockResolvedValue(null);
+    Course.create.mockReset();
+    Course.create.mockResolvedValue(null);
     resetMockIsUserLoaded();
   });
 
@@ -117,10 +125,60 @@ describe('Manage Route Tests', () => {
       // check the table contents
       for (let i = 0; i < rows.length; i++) {
         expect(rows[i].querySelector('td:nth-child(2)').innerHTML).toBe(data[i].title);
-        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].prefix);
-        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].suffix);
-        expect(rows[i].querySelector('td:nth-child(5)').innerHTML).toBe(data[i].credits);
+        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].description);
+        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].prefix);
+        expect(rows[i].querySelector('td:nth-child(5)').innerHTML).toBe(data[i].suffix);
+        expect(rows[i].querySelector('td:nth-child(6)').innerHTML).toBe(data[i].credits);
       }
+    });
+
+    test('create course success', async () => {
+      Course.create.mockResolvedValueOnce({});
+      const response = await request(app).post(`/manage/course/add/`);
+      expect(response.statusCode).not.toBe(404);
+    });
+
+    test('create course failure', async () => {
+      Course.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post('/manage/course/add/');
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('edit course success', async () => {
+      const data = dataForGetCourse(1);
+      Course.edit.mockResolvedValueOnce(data[0]);
+      const response = await request(app).post(`/manage/course/edit/${data[0].id}`).send({
+        title: 'NEW TITLE',
+        description: 'NEW DESCRIPTION',
+        prefix: 'NEW PREFIX',
+        suffix: 'NEW SUFFIX',
+        credits: 1,
+      });
+      expect(response.statusCode).not.toBe(404);
+    });
+
+    test('edit course failure', async () => {
+      const data = dataForGetCourse(1);
+      Course.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post(`/manage/course/edit/${data[0].id}`);
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Course.deleteCourse successful route', async () => {
+      const data = dataForGetCourse(2, 1);
+      Course.deleteCourse.mockResolvedValue(data[0]);
+      // Course id is being set by value in function, which is created from index + offset
+      expect(data[0].id).toBe('2');
+      expect(data[1].id).toBe('3');
+      const response = await request(app).get(`/manage/course/delete/${data[0].id}`);
+      expect(response.statusCode).not.toBe(404);
+      // Line 34 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/manage');
+    });
+
+    test('Course.deleteCourse thrown error', async () => {
+      const response = await request(app).get(`/manage/course/delete/${undefined}`);
+      expect(response.statusCode).toBe(500);
     });
   });
 });

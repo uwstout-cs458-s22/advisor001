@@ -5,6 +5,7 @@ function deSerializeCourse(data) {
     suffix: data.suffix,
     title: data.title,
     credits: data.credits,
+    description: data.description,
   };
 }
 

@@ -70,6 +70,24 @@
 </script>
 
 <script>
+  //Check if user is not enabled. If they are not, redirect them to the login page and alert them of their status
+  const enabled = '<%= enable %>';
+  if (enabled === 'false') {
+    window.location.href = '/logout';
+    alert(
+      'You are not an enabled user. Please contact an admin so that they can enable your account.'
+    );
+  }
+
+  //This will ensure that the user will logged out if they try to change pages while not enabled
+  window.onbeforeunload = function () {
+    if (enabled === 'false') {
+      window.location.href = '/logout';
+    }
+  };
+</script>
+
+<script>
   //Alert user of their role if it is incorrect
   function checkRole() {
     let page = window.location.pathname;

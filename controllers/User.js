@@ -28,6 +28,22 @@ async function create(sessionToken, userId, email) {
   }
 }
 
+async function edit(sessionToken, userId, newValues) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  // newValues = JSON.parse(newValues)
+  const response = await request.put(`/users/${userId}`, newValues);
+  if (response.status === 200 || response.status === 201) {
+    const userParms = deSerializeUser(response.data);
+    const user = new User(userParms);
+    log.debug(`Advisor API Success: Edited (${response.status}) User ${userId} (${newValues})`);
+    return user;
+  } else {
+    throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
+  }
+}
+
 async function fetchAll(sessionToken, offset, limit) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
@@ -61,5 +77,6 @@ async function deleteUser(sessionToken, userId) {
 module.exports = {
   create,
   fetchAll,
-  deleteUser,
+  edit,
+  deleteUser
 };
