@@ -13,6 +13,7 @@ async function create(sessionToken, userId, email) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
+  // Requesting to post user info to the database. Send function on click.
   const response = await request.post('users', {
     email: email,
     userId: userId,
@@ -21,6 +22,22 @@ async function create(sessionToken, userId, email) {
     const userParms = deSerializeUser(response.data);
     const user = new User(userParms);
     log.debug(`Advisor API Success: Created (${response.status}) User ${user.id} (${user.email})`);
+    return user;
+  } else {
+    throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
+  }
+}
+
+async function edit(sessionToken, userId, newValues) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  // newValues = JSON.parse(newValues)
+  const response = await request.put(`/users/${userId}`, newValues);
+  if (response.status === 200 || response.status === 201) {
+    const userParms = deSerializeUser(response.data);
+    const user = new User(userParms);
+    log.debug(`Advisor API Success: Edited (${response.status}) User ${userId} (${newValues})`);
     return user;
   } else {
     throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
@@ -60,5 +77,6 @@ async function deleteUser(sessionToken, userId) {
 module.exports = {
   create,
   fetchAll,
-  deleteUser,
+  edit,
+  deleteUser
 };

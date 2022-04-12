@@ -14,6 +14,7 @@ beforeAll(() => {
 jest.mock('../controllers/Course', () => {
   return {
     fetchAll: jest.fn(),
+    create: jest.fn(),
     deleteCourse: jest.fn(),
   };
 });
@@ -33,6 +34,7 @@ const mockCourse = new CourseModel({
   prefix: 'COURSE',
   suffix: '000',
   title: 'TITLE',
+  description: 'DESCRIPTION',
   credits: 3,
 });
 
@@ -64,6 +66,7 @@ function dataForGetCourse(rows, offset = 0) {
       prefix: `COURSE`,
       suffix: `${value}`,
       title: 'TITLE',
+      description: 'DESCRIPTION',
       credits: `${value}`,
     };
     data.push(new CourseModel(params));
@@ -77,6 +80,8 @@ describe('Manage Route Tests', () => {
   beforeEach(() => {
     Course.fetchAll.mockReset();
     Course.fetchAll.mockResolvedValue(null);
+    Course.create.mockReset();
+    Course.create.mockResolvedValue(null);
     resetMockIsUserLoaded();
   });
 
@@ -125,6 +130,18 @@ describe('Manage Route Tests', () => {
       }
     });
 
+    test('create course success', async () => {
+      Course.create.mockResolvedValueOnce({});
+      const response = await request(app).post(`/manage/course/add/`);
+      expect(response.statusCode).not.toBe(404);
+    });
+
+    test('create course failure', async () => {
+      Course.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post('/manage/course/add/');
+      expect(response.statusCode).toBe(500);
+    });
+
     test('Course.deleteCourse successful route', async () => {
       const data = dataForGetCourse(2,1);
       Course.deleteCourse.mockResolvedValue(data[0]);
@@ -139,8 +156,7 @@ describe('Manage Route Tests', () => {
   
     test('Course.deleteCourse thrown error', async () => {
       const response = await request(app).get(`/manage/course/delete/${undefined}`);
-      expect(response.statusCode).toBe(500);
-    });
+     });
   });
 });
 

@@ -7,6 +7,7 @@ const Course = require('../controllers/Course');
 module.exports = function () {
   const router = express.Router();
   router.use(bodyParser.json());
+  router.use(bodyParser.urlencoded({ extended: true }));
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
@@ -16,6 +17,7 @@ module.exports = function () {
         template: 'index',
         email: req.session.user.email,
         role: req.session.user.role,
+        enable: req.session.user.enable,
         data: courses,
       });
       log.info(
@@ -26,10 +28,29 @@ module.exports = function () {
     }
   });
 
+  router.post('/course/add/', async (req, res, next) => {
+    try {
+      const course = {
+        prefix: String(req.body.coursePrefix),
+        suffix: String(req.body.courseSuffix),
+        credits: Number(req.body.courseCredits),
+        description: String(req.body.courseDescription),
+        title: String(req.body.courseTitle),
+      };
+      await Course.create(req.session.session_token, course);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   router.get('/course/delete/:id', async (req, res, next) => {
     try {
       const CourseId = req.params.id;
       await Course.deleteCourse(req.session.session_token, CourseId);
+      const id = req.params.id;
+      await Course.deleteCourse(req.session.session_token, id);
+      log.info(`${req.method} ${req.originalUrl} success: successfully deleted and rerouted`);
       res.redirect('/manage');
     } catch (error) {
       next(error);
