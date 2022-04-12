@@ -44,13 +44,27 @@ module.exports = function () {
     }
   });
 
+  router.post('/course/edit/:id', async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const course = {
+        prefix: String(req.body.editPrefix),
+        suffix: String(req.body.editSuffix),
+        credits: Number(req.body.editCredits),
+        description: String(req.body.editDescription),
+        title: String(req.body.editTitle),
+      };
+      await Course.edit(req.session.session_token, id, course);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   router.get('/course/delete/:id', async (req, res, next) => {
     try {
-      const CourseId = req.params.id;
-      await Course.deleteCourse(req.session.session_token, CourseId);
       const id = req.params.id;
       await Course.deleteCourse(req.session.session_token, id);
-      log.info(`${req.method} ${req.originalUrl} success: successfully deleted and rerouted`);
       res.redirect('/manage');
     } catch (error) {
       next(error);

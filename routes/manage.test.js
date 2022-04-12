@@ -15,6 +15,7 @@ jest.mock('../controllers/Course', () => {
   return {
     fetchAll: jest.fn(),
     create: jest.fn(),
+    edit: jest.fn(),
     deleteCourse: jest.fn(),
   };
 });
@@ -124,9 +125,10 @@ describe('Manage Route Tests', () => {
       // check the table contents
       for (let i = 0; i < rows.length; i++) {
         expect(rows[i].querySelector('td:nth-child(2)').innerHTML).toBe(data[i].title);
-        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].prefix);
-        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].suffix);
-        expect(rows[i].querySelector('td:nth-child(5)').innerHTML).toBe(data[i].credits);
+        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].description);
+        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].prefix);
+        expect(rows[i].querySelector('td:nth-child(5)').innerHTML).toBe(data[i].suffix);
+        expect(rows[i].querySelector('td:nth-child(6)').innerHTML).toBe(data[i].credits);
       }
     });
 
@@ -142,22 +144,41 @@ describe('Manage Route Tests', () => {
       expect(response.statusCode).toBe(500);
     });
 
+    test('edit course success', async () => {
+      const data = dataForGetCourse(1);
+      Course.edit.mockResolvedValueOnce(data[0]);
+      const response = await request(app).post(`/manage/course/edit/${data[0].id}`).send({
+        title: 'NEW TITLE',
+        description: 'NEW DESCRIPTION',
+        prefix: 'NEW PREFIX',
+        suffix: 'NEW SUFFIX',
+        credits: 1,
+      });
+      expect(response.statusCode).not.toBe(404);
+    });
+
+    test('edit course failure', async () => {
+      const data = dataForGetCourse(1);
+      Course.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post(`/manage/course/edit/${data[0].id}`);
+      expect(response.statusCode).toBe(500);
+    });
+
     test('Course.deleteCourse successful route', async () => {
-      const data = dataForGetCourse(2,1);
+      const data = dataForGetCourse(2, 1);
       Course.deleteCourse.mockResolvedValue(data[0]);
       // Course id is being set by value in function, which is created from index + offset
-      expect(data[0].id).toBe("2");
-      expect(data[1].id).toBe("3");
+      expect(data[0].id).toBe('2');
+      expect(data[1].id).toBe('3');
       const response = await request(app).get(`/manage/course/delete/${data[0].id}`);
       expect(response.statusCode).not.toBe(404);
       // Line 34 does not get covered by the test, but the test below covers it.
       expect(global.window.location.pathname).toEqual('/manage');
     });
-  
+
     test('Course.deleteCourse thrown error', async () => {
       const response = await request(app).get(`/manage/course/delete/${undefined}`);
       expect(response.statusCode).toBe(500);
     });
   });
 });
-

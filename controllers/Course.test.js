@@ -88,6 +88,33 @@ describe('Course controller tests', () => {
     });
   });
 
+  describe('edit tests', () => {
+    test('edit course - happy path', async () => {
+      const courses = {
+        prefix: 'CS',
+        suffix: '123',
+        credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
+        title: 'Programming 1',
+      };
+
+      axios.put.mockResolvedValueOnce({ data: courses, status: 200 });
+      const result = await Course.edit(courses.id, courses.data);
+      expect(axios.put).toHaveBeenCalledWith(`course/${courses.id}`, courses.data);
+      expect(result.data).toEqual(courses);
+      expect(result.status).toEqual(200);
+    });
+
+    test('edit - error response', async () => {
+      axios.put.mockResolvedValueOnce({
+        status: 500,
+        data: { error: { status: 500, message: 'Internal Server Error' } },
+      });
+      await expect(Course.edit({})).rejects.toThrow('Advisor API Error 500: Internal Server Error');
+      expect(axios.put).toHaveBeenCalledWith(`course/${undefined}`, undefined);
+    });
+  });
+
   describe('delete tests', () => {
     test('delete - valid delete', async () => {
       const Courses = {
@@ -102,11 +129,9 @@ describe('Course controller tests', () => {
         status: 200,
       });
 
-      const result = await Course.deleteCourse('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q','1');
+      const result = await Course.deleteCourse('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', '1');
 
-      expect(axios.delete).toHaveBeenCalledWith(
-        'course/1'
-      );
+      expect(axios.delete).toHaveBeenCalledWith('course/1');
       expect(result.status).toEqual(200);
     });
 
