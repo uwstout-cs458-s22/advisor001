@@ -28,9 +28,7 @@ describe('Term controller tests', () => {
         startyear: 2022,
         semester: 2,
       });
-      expect(result.data.title).toEqual(term.title);
-      expect(result.data.startyear).toEqual(term.startyear);
-      expect(result.data.semester).toEqual(term.semester);
+      expect(result.data).toEqual(term);
       expect(result.status).toEqual(201);
     });
 
@@ -47,9 +45,7 @@ describe('Term controller tests', () => {
         startyear: 2022,
         semester: 2,
       });
-      expect(result.data.title).toEqual(term.title);
-      expect(result.data.startyear).toEqual(term.startyear);
-      expect(result.data.semester).toEqual(term.semester);
+      expect(result.data).toEqual(term);
       expect(result.status).toEqual(200);
     });
 
