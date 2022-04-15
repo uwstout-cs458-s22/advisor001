@@ -235,13 +235,15 @@
       <form id="addTermForm" method="POST" action="/manage/term/add/">
         <!-- Title -->
         <div class="form-group">
-          <label for="termTitle">Prefix: </label>
+          <label for="termTitle">Term Name: </label>
           <input class="form-control" type="text" name="termTitle"></input>
         </div>
         <!-- Start Year -->
         <div class="form-group">
           <label for="termYear">Start Year: </label>
-          <input class="form-control" type="number" name="termYear"></input>
+          
+          <input class="form-control" id="yearSelect" type="number" min="2022" max="9999" name="termYear" value=""></input>
+          <script>document.getElementById("yearSelect").value = (new Date().getFullYear())</script>
         </div>
         <!-- Semester -->
         <div class="form-group">
