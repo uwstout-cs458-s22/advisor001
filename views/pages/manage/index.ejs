@@ -197,11 +197,9 @@
         <br>
         <input type="submit" value="Search"  class="btn btn-primary">
        <!--Hovland delete program button; 18Apr22.-->
-       <button class = "delete btn btn-danger" onclick= "remove()">Delete Program</button>
-       <!--Hovland delete program button prototype, removes program 19Apr22-->
-       <input type = "button" onclick = "remove()" value = "Delete program prototype" >  
+       <input type = "button" class = "delete btn btn-danger" onclick= "remove()" value = "Delete Program">
       </form>
- <!--Hovland button program removal code-->
+ <!--Hovland button program removal code; 19Apr22-->
  <script>
   function remove(){
     let remove = confirm("Confirm Deletion?");
