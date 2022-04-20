@@ -25,6 +25,7 @@ jest.mock('../controllers/Course', () => {
 jest.mock('../controllers/Term', () => {
   return {
     create: jest.fn(),
+    edit: jest.fn(),
   };
 });
 
@@ -86,6 +87,21 @@ function dataForGetCourse(rows, offset = 0) {
       credits: `${value}`,
     };
     data.push(new CourseModel(params));
+  }
+  return data;
+}
+
+function dataForGetTerm(rows, offset = 0) {
+  const data = [];
+  for (let i = 1; i <= rows; i++) {
+    const value = i + offset;
+    const params = {
+      id: `${value}`,
+      title: `TITLE`,
+      startyear: 2020,
+      semester: `${value}`,
+    };
+    data.push(new TermModel(params));
   }
   return data;
 }
@@ -207,6 +223,25 @@ describe('Manage Route Tests', () => {
     test('Term.create failure', async () => {
       Term.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
       const response = await request(app).post('/manage/term/add/');
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Term.edit success', async () => {
+      const data = dataForGetTerm(1);
+      Term.edit.mockResolvedValueOnce(data[0]);
+      const response = await request(app).get(`/manage/term/edit/${data[0].id}`).send({
+        title: 'NEW TITLE',
+        startYear: 2000,
+        semester: 1,
+      });
+      expect(response.statusCode).not.toBe(404);
+      // Line 114 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/manage');
+    });
+    test('Term,edit failure', async () => {
+      const data = dataForGetTerm(1);
+      Term.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/manage/term/edit/${data[0].id}`);
       expect(response.statusCode).toBe(500);
     });
   });

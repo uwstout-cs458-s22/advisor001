@@ -86,5 +86,24 @@ module.exports = function () {
     }
   });
 
+  router.get('/term/edit/:id', async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const term = {
+        title: 'I hope this works',
+        startyear: 2040,
+        semester: 2,
+        // title: String(req.body.editTermTitle),
+        // startyear: Number(req.body.editTermYear),
+        // semester: Number(req.body.editTermSemester),
+      };
+      await Term.edit(req.session.session_token, id, term);
+      res.redirect('/manage');
+    } catch (error) {
+      log.debug(error);
+      next(error);
+    }
+  });
+
   return router;
 };

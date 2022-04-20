@@ -201,6 +201,7 @@
     </div>
     <br>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTermModal">Add Term</button>
+    <a type="button" class="btn btn-primary" href="/manage/term/edit/2">Edit Term</a>
     <div class="form-group">
       <form action="">
         <label for="terms">What Term would you like to view?</label>
@@ -248,6 +249,39 @@
         <div class="form-group">
           <label for="termSemester">Semester: </label>
           <input class="form-control" type="number" min="1" max="2" name="termSemester"></input>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="submit" class="btn btn-success">Save</button>
+          <button class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Term Modal This will be used later -->
+<div id="editTermModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Edit Term</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="editTermForm" method="POST" action="/manage/term/edit/TODO: TERM ID HERE">
+        <!-- Title -->
+        <div class="form-group">
+          <label for="editTermTitle">Term Name: </label>
+          <input class="form-control" type="text" name="editTermTitle" value="PLACEHOLDER"></input>
+        </div>
+        <!-- Start Year -->
+        <div class="form-group">
+          <label for="editTermYear">Start Year: </label>
+          <input class="form-control" type="number" min="2022" max="9999" name="editTermYear" value="9999"></input>
+        </div>
+        <!-- Semester -->
+        <div class="form-group">
+          <label for="editTermSemester">Semester: </label>
+          <input class="form-control" type="number" min="1" max="2" name="editTermSemester" value="1"></input>
         </div>
         <div class="form-group">
           <button type="submit" id="submit" class="btn btn-success">Save</button>
