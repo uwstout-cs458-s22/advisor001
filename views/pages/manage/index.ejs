@@ -196,9 +196,18 @@
         </select>
         <br>
         <input type="submit" value="Search"  class="btn btn-primary">
-       <!--Hovland delete program button; 18Apr22. Note: Needs href to link to method-->
+       <!--Hovland delete program button; 18Apr22.-->
        <button class = "delete btn btn-danger" onclick="return confirm('Confirm Deletion?')">Delete Program</button>
+       <!--Hovland delete program button prototype, removes program 19Apr22-->
+       <input type = "button" onclick = "remove()" value = "Delete program prototype" >  
       </form>
+ <!--Hovland button program removal code-->
+ <script>
+  function remove(){
+    var x = document.getElementById("programs");
+    x.remove(x.selectedIndex);
+  }
+    </script>
     </div>
     <br>
     <div class="form-group">
