@@ -6,6 +6,8 @@ const TermModel = require('../models/Term');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
 const Term = require('../controllers/Term');
+// const ProgramModel = require('../models/Program');
+// const Program = require('../controllers/Program');
 const HttpError = require('http-errors');
 global.window = { location: { pathname: '/manage' } };
 
@@ -27,6 +29,13 @@ jest.mock('../controllers/Term', () => {
     create: jest.fn(),
   };
 });
+
+// jest.mock('../controllers/Program', () => {
+//   return {
+//     create: jest.fn(),
+//     edit: jest.fn(), //ADD THIS
+//   };
+// });
 
 jest.mock('../services/environment', () => {
   return {
@@ -53,6 +62,14 @@ const mockTerm = new TermModel({
   startyear: 2020,
   semester: 2,
 });
+
+// This is where I'd have a Program...if I had one
+// const mockProgram = new ProgramModel({
+//   id: '1000',
+//   title: 'TITLE',
+//   startyear: 2020,
+//   semester: 2,
+// });
 
 jest.mock('../services/auth', () => {
   return {
@@ -209,5 +226,25 @@ describe('Manage Route Tests', () => {
       const response = await request(app).post('/manage/term/add/');
       expect(response.statusCode).toBe(500);
     });
+
+    // Someday these Programs will exist, someday
+    // test('Program.edit success', async () => {
+    //   const data = dataForGetProgram(1);
+    //   Program.edit.mockResolvedValueOnce(data[0]);
+    //   const response = await request(app).get(`/manage/program/edit/${data[0].id}`).send({
+    //     title: 'NEW TITLE',
+    //     startYear: 2000,
+    //     semester: 1,
+    //   });
+    //   expect(response.statusCode).not.toBe(404);
+    //   // Line 114 does not get covered by the test, but the test below covers it.
+    //   expect(global.window.location.pathname).toEqual('/manage');
+    // });
+    // test('Program,edit failure', async () => {
+    //   const data = dataForGetProgram(1);
+    //   Program.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+    //   const response = await request(app).get(`/manage/program/edit/${data[0].id}`);
+    //   expect(response.statusCode).toBe(500);
+    // });
   });
 });
