@@ -4,6 +4,7 @@ const log = require('loglevel');
 const { isUserLoaded } = require('../services/auth');
 const Course = require('../controllers/Course');
 const Term = require('../controllers/Term');
+// const Program = require('../controllers/Program'); // ADD IN WHEN API
 
 module.exports = function () {
   const router = express.Router();
@@ -82,6 +83,22 @@ module.exports = function () {
       await Term.create(req.session.session_token, term);
       res.redirect('/manage');
     } catch (error) {
+      next(error);
+    }
+  });
+
+  router.get('/program/edit/:id', async (req, res, next) => { // MAKE POST ?
+    try {
+      // const id = Number(req.params.id);
+      // const program = { // CHANGE TO PROGRAM INPUTS
+      //   title: 'I hope this works',
+      //   startyear: 2040,
+      //   semester: 2,
+      // };
+      // await Program.edit(req.session.session_token, id, program);
+      res.redirect('/manage');
+    } catch (error) {
+      log.debug(error);
       next(error);
     }
   });
