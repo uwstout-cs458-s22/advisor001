@@ -212,6 +212,7 @@
     </script>
     </div>
     <br>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTermModal">Add Term</button>
     <div class="form-group">
       <form action="">
         <label for="terms">What Term would you like to view?</label>
@@ -234,6 +235,41 @@
 
   </div>
 </div>
+
+<!-- Add Term Modal -->
+<div id="addTermModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Add Term</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="addTermForm" method="POST" action="/manage/term/add/">
+        <!-- Title -->
+        <div class="form-group">
+          <label for="termTitle">Term Name: </label>
+          <input class="form-control" type="text" name="termTitle"></input>
+        </div>
+        <!-- Start Year -->
+        <div class="form-group">
+          <label for="termYear">Start Year: </label>
+          <input class="form-control" id="yearSelect" type="number" min="2022" max="9999" name="termYear" value=""></input>
+          <script>document.getElementById("yearSelect").value = (new Date().getFullYear())</script>
+        </div>
+        <!-- Semester -->
+        <div class="form-group">
+          <label for="termSemester">Semester: </label>
+          <input class="form-control" type="number" min="1" max="2" name="termSemester"></input>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="submit" class="btn btn-success">Save</button>
+          <button class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
   //Adding Table pages, search bar, and sorting using JQuery
   $(document).ready(function () {

@@ -2,8 +2,10 @@ const request = require('supertest');
 const { JSDOM } = require('jsdom');
 const log = require('loglevel');
 const CourseModel = require('../models/Course');
+const TermModel = require('../models/Term');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
+const Term = require('../controllers/Term');
 const HttpError = require('http-errors');
 global.window = { location: { pathname: '/manage' } };
 
@@ -17,6 +19,12 @@ jest.mock('../controllers/Course', () => {
     create: jest.fn(),
     edit: jest.fn(),
     deleteCourse: jest.fn(),
+  };
+});
+
+jest.mock('../controllers/Term', () => {
+  return {
+    create: jest.fn(),
   };
 });
 
@@ -37,6 +45,13 @@ const mockCourse = new CourseModel({
   title: 'TITLE',
   description: 'DESCRIPTION',
   credits: 3,
+});
+
+const mockTerm = new TermModel({
+  id: '1000',
+  title: 'TITLE',
+  startyear: 2020,
+  semester: 2,
 });
 
 jest.mock('../services/auth', () => {
@@ -178,6 +193,20 @@ describe('Manage Route Tests', () => {
 
     test('Course.deleteCourse thrown error', async () => {
       const response = await request(app).get(`/manage/course/delete/${undefined}`);
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Term.create success', async () => {
+      Term.create.mockResolvedValueOnce(mockTerm);
+      const response = await request(app).post(`/manage/term/add/`);
+      expect(response.statusCode).not.toBe(404);
+      // Line 83 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/manage');
+    });
+
+    test('Term.create failure', async () => {
+      Term.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post('/manage/term/add/');
       expect(response.statusCode).toBe(500);
     });
   });

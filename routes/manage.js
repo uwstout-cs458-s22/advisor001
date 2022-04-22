@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const log = require('loglevel');
 const { isUserLoaded } = require('../services/auth');
 const Course = require('../controllers/Course');
+const Term = require('../controllers/Term');
 
 module.exports = function () {
   const router = express.Router();
@@ -65,6 +66,20 @@ module.exports = function () {
     try {
       const id = req.params.id;
       await Course.deleteCourse(req.session.session_token, id);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post('/term/add/', async (req, res, next) => {
+    try {
+      const term = {
+        title: String(req.body.termTitle),
+        startyear: Number(req.body.termYear),
+        semester: Number(req.body.termSemester),
+      };
+      await Term.create(req.session.session_token, term);
       res.redirect('/manage');
     } catch (error) {
       next(error);
