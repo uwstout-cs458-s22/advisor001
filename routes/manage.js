@@ -86,5 +86,15 @@ module.exports = function () {
     }
   });
 
+  router.get('/term/delete/:id', async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      await Term.deleteTerm(req.session.session_token, id);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return router;
 };

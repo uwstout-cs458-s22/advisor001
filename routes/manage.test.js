@@ -25,6 +25,7 @@ jest.mock('../controllers/Course', () => {
 jest.mock('../controllers/Term', () => {
   return {
     create: jest.fn(),
+    deleteTerm: jest.fn(),
   };
 });
 
@@ -86,6 +87,22 @@ function dataForGetCourse(rows, offset = 0) {
       credits: `${value}`,
     };
     data.push(new CourseModel(params));
+  }
+  return data;
+}
+
+// a helper that creates an array structure getTermById
+function dataForGetTerm(rows, offset = 0) {
+  const data = [];
+  for (let i = 1; i <= rows; i++) {
+    const value = i + offset;
+    const params = {
+      id: `${value}`,
+      title: `TITLE`,
+      startyear: `STARTYEAR`,
+      semester: `SEMESTER`,
+    };
+    data.push(new TermModel(params));
   }
   return data;
 }
@@ -209,5 +226,23 @@ describe('Manage Route Tests', () => {
       const response = await request(app).post('/manage/term/add/');
       expect(response.statusCode).toBe(500);
     });
+
+    test('Term.deleteTerm successful route', async () => {
+      const data = dataForGetTerm(2, 1);
+      Term.deleteTerm.mockResolvedValue(data[0]);
+      // Term id is being set by value in function, which is created from index + offset
+      expect(data[0].id).toBe('2');
+      expect(data[1].id).toBe('3');
+      const response = await request(app).get(`/manage/term/delete/${data[0].id}`);
+      expect(response.statusCode).not.toBe(404);
+      // Line 34 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/manage');
+    });
+
+    test('Term.deleteTerm thrown error', async () => {
+      const response = await request(app).get(`/manage/term/delete/${undefined}`);
+      expect(response.statusCode).toBe(500);
+    });
+
   });
 });
