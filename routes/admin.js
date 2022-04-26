@@ -30,26 +30,19 @@ module.exports = function () {
     }
   });
 
-  router.post('/users/edit/:userId', isUserLoaded, async (req, res, next) => {
-    let isEnabled;
-    if (Boolean(req.body.enabled) === true) {
-      isEnabled = 'true';
-    } else {
-      isEnabled = 'false';
-    }
-    const userRole = String(req.body.role);
-    const newValues = {
-      enable: isEnabled,
-      role: userRole,
-    };
+  router.post('/users/edit/:userId', async (req, res, next) => {
     try {
+      const newValues = {
+        enable: req.body.enabled ? 'true' : 'false',
+        role: String(req.body.role),
+      };
       await User.edit(req.session.session_token, req.params.userId, newValues);
-      res.redirect(303, '/admin');
+      res.redirect('/admin');
     } catch (error) {
       next(error);
     }
   });
-  
+
   router.get('/users/delete/:userID', async (req, res, next) => {
     try {
       const userID = req.params.userID;

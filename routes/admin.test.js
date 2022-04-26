@@ -144,7 +144,7 @@ describe('Admin Route Tests', () => {
       User.edit.mockResolvedValue(data[0]);
       expect(data[0].userId).toBe('user-test-someguid1');
       const response = await request(app).post(`/admin/users/edit/${data[0].userId}`);
-      expect(response.statusCode).toBe(303);
+      expect(response.statusCode).toBe(302);
       expect(global.window.location.pathname).toEqual('/admin');
     });
 
@@ -156,8 +156,22 @@ describe('Admin Route Tests', () => {
       const response = await request(app)
         .post(`/admin/users/edit/${data[0].userId}`)
         .send({ enabled: true });
-      expect(response.statusCode).toBe(303);
+      expect(response.statusCode).toBe(302);
       expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.edit failure route', async () => {
+      mockUserIsLoggedIn();
+      const data = dataForGetUser(1);
+      User.edit.mockResolvedValue(data[0]);
+      const badData = {
+        userId: 'not-a-guid',
+        enabled: 'true',
+        role: 'admin',
+      };
+      data[0].userId = 0;
+      const response = await request(app).post(`/admin/users/edit/${badData.userId}`).send(badData);
+      expect(response.statusCode).toBe(500);
     });
 
     test('User.deleteUser successful route', async () => {
