@@ -12,6 +12,7 @@ module.exports = function () {
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
+      const terms = await Term.fetchAll(req.session.session_token, 0, 100);
       res.render('layout', {
         pageTitle: 'Advisor Management',
         group: 'manage',
@@ -19,10 +20,11 @@ module.exports = function () {
         email: req.session.user.email,
         role: req.session.user.role,
         enable: req.session.user.enable,
-        data: courses,
+        courseData: courses,
+        termData: terms
       });
       log.info(
-        `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s)`
+        `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s) and ${terms.length} term(s)`
       );
     } catch (error) {
       next(error);
