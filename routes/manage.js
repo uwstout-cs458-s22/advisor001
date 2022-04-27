@@ -86,5 +86,17 @@ module.exports = function () {
     }
   });
 
+  //Not sure if this needs more work.
+  router.get('/program/delete/:id', async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      await Program.deleteProgram(req.session.session_token, id);
+      res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
+
   return router;
 };
