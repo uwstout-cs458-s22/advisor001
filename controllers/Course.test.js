@@ -86,6 +86,117 @@ describe('Course controller tests', () => {
       await expect(Course.create({})).rejects.toThrow('Advisor API Error 500: undefined');
       expect(axios.post).toHaveBeenCalledWith('course', undefined);
     });
+
+    test('create - missing prefix error', async () => {
+      const courses = {
+        suffix: '123',
+        credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
+        title: 'Programming 1',
+      };
+
+      axios.post.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.create(
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: undefined');
+      expect(axios.post).toHaveBeenCalledWith('course', courses.data);
+
+    });
+
+    test('create - missing suffix error', async () => {
+      const courses = {
+        prefix: 'CS',
+        credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
+        title: 'Programming 1',
+      };
+
+      axios.post.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.create(
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: undefined');
+      expect(axios.post).toHaveBeenCalledWith('course', courses.data);
+
+    });
+
+    test('create - missing credits error', async () => {
+      const courses = {
+        prefix: 'CS',
+        suffix: '123',
+        description: 'This course is for students who want to learn how to program computers.',
+        title: 'Programming 1',
+      };
+
+      axios.post.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.create(
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: undefined');
+      expect(axios.post).toHaveBeenCalledWith('course', courses.data);
+
+    });
+
+    test('create - missing description error', async () => {
+      const courses = {
+        prefix: 'CS',
+        suffix: '123',
+        credits: 3,
+        title: 'Programming 1',
+      };
+
+      axios.post.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.create(
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: undefined');
+      expect(axios.post).toHaveBeenCalledWith('course', courses.data);
+
+    });
+
+    test('create - missing title error', async () => {
+      const courses = {
+        prefix: 'CS',
+        suffix: '123',
+        credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
+      };
+
+      axios.post.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.create(
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: undefined');
+      expect(axios.post).toHaveBeenCalledWith('course', courses.data);
+
+    });
+
   });
 
   describe('edit tests', () => {
@@ -113,6 +224,122 @@ describe('Course controller tests', () => {
       await expect(Course.edit({})).rejects.toThrow('Advisor API Error 500: Internal Server Error');
       expect(axios.put).toHaveBeenCalledWith(`course/${undefined}`, undefined);
     });
+
+    test('edit - missing prefix error', async () => {
+      const courses = {
+        suffix: '123',
+        credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
+        title: 'Programming 1',
+      };
+
+      axios.put.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.edit(
+          courses.id,
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: Missing Course Parameters');
+      expect(axios.put).toHaveBeenCalledWith(`course/${courses.id}`, courses.data);
+
+    });
+
+    test('edit - missing suffix error', async () => {
+      const courses = {
+        prefix: 'CS',
+        credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
+        title: 'Programming 1',
+      };
+
+      axios.put.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.edit(
+          courses.id,
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: Missing Course Parameters');
+      expect(axios.put).toHaveBeenCalledWith(`course/${courses.id}`, courses.data);
+
+    });
+
+    test('edit - missing credits error', async () => {
+      const courses = {
+        prefix: 'CS',
+        suffix: '123',
+        description: 'This course is for students who want to learn how to program computers.',
+        title: 'Programming 1',
+      };
+
+      axios.put.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.edit(
+          courses.id,
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: Missing Course Parameters');
+      expect(axios.put).toHaveBeenCalledWith(`course/${courses.id}`, courses.data);
+
+    });
+
+    test('edit - missing description error', async () => {
+      const courses = {
+        prefix: 'CS',
+        suffix: '123',
+        credits: 3,
+        title: 'Programming 1',
+      };
+
+      axios.put.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.edit(
+          courses.id,
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: Missing Course Parameters');
+      expect(axios.put).toHaveBeenCalledWith(`course/${courses.id}`, courses.data);
+
+    });
+
+    test('edit - missing title error', async () => {
+      const courses = {
+        prefix: 'CS',
+        suffix: '123',
+        credits: 3,
+        description: 'This course is for students who want to learn how to program computers.',
+      };
+
+      axios.put.mockResolvedValueOnce({
+        status: 400,
+        data: { error: { status: 400, message: 'Missing Course Parameters' }},
+      });
+
+      await expect(
+        Course.edit(
+          courses.id,
+          courses.data
+        )
+      ).rejects.toThrow('Advisor API Error 400: Missing Course Parameters');
+      expect(axios.put).toHaveBeenCalledWith(`course/${courses.id}`, courses.data);
+
+    });
+
   });
 
   describe('delete tests', () => {
@@ -133,6 +360,15 @@ describe('Course controller tests', () => {
 
       expect(axios.delete).toHaveBeenCalledWith('course/1');
       expect(result.status).toEqual(200);
+    });
+
+    test('delete - error response', async () => {
+      axios.delete.mockResolvedValueOnce({
+        status: 500,
+        data: { error: { status: 500, message: 'Internal Server Error' } },
+      });
+      await expect(Course.deleteCourse({})).rejects.toThrow('Advisor API Delete Error 500: undefined');
+      expect(axios.put).toHaveBeenCalledWith(`course/undefined`, undefined);
     });
 
     test('delete - Required Parameters Missing', async () => {

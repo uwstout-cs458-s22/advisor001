@@ -164,15 +164,16 @@ describe('User controller tests', () => {
   });
 
   describe('edit tests', () => {
-    const user = { // Test user values
-      id: 5678,
-      email: 'test3r@testy.com',
-      enable: true,
-      role: 'user',
-      userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
-    };
 
     test('edit - valid edit', async () => {
+      const user = { // Test user values
+        id: 5678,
+        email: 'test3r@testy.com',
+        enable: true,
+        role: 'user',
+        userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+      };
+
       axios.put.mockResolvedValueOnce({ data: user, status: 200 });
       const result = await User.edit(
         'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
@@ -188,6 +189,14 @@ describe('User controller tests', () => {
     });
 
     test('edit - error response', async () => {
+      const user = { // Test user values
+        id: 5678,
+        email: 'test3r@testy.com',
+        enable: true,
+        role: 'user',
+        userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+      };
+
       axios.put.mockResolvedValueOnce({ status: 500, data: { Error: 'Internal Database Error' } });
       await expect( User.edit(
         'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
