@@ -176,31 +176,32 @@
     <p class="text-center">No Courses found!</p>
     <% } %>
 
-    <div class="form-group">
-      <form>
-        <label for="programs">What Program would you like to view?</label>
-        <br>
-        <select name="programs" id="programs" class="form-control">
-          <option value="none" selected disabled hidden>Select a Program</option>
-          <optgroup label="Majors">
-            <option value="animDigi">BFA Animation & Digital Media</option>
-            <option value="appBioChemMolBio">BS Applied Biochemistry and Molecular Biology</option>
-            <option value="appMathComSci">BS Applied Mathematics and Computer Science</option>
-            <option value="appSci">BS Applied Science</option>
-          </optgroup>
-          <optgroup label="Minors">
-            <option value="appForLang">Applied Foreign Languages</option>
-            <option value="appPcStud">Applied Peace Studies</option>
-            <option value="artHist">Art History</option>
-            <option value="bio">Biology</option>
-          </optgroup>
-        </select>
-        <br>
-        <input type="submit" value="Search"  class="btn btn-primary">
-      </form>
-    </div>
-    <br>
-    <p><%= termData.length %></p>
+    <!-- if result is empty -->
+    <% if(!termData.length) { %>
+      <p class="text-center">No Terms found!</p>
+    <% } %>
+
+    <% if(programData.length) { %>
+      <div class="form-group">
+        <form action="">
+          <label for="programs">What Program would you like to view?</label>
+          <br>
+          <select name="programs" id="programs" class="form-control">
+            <option value="none" selected disabled hidden>Select a Program</option>
+            <% for(var i = 0; i < programData.length; i++) { %>
+              <option value="<%=programData[i].id%>"><%= programData[i].title %></option>
+            <% } %>
+          </select>
+          <br>
+          <input type="submit" value="Search" class="btn btn-primary">
+        </form>
+      </div>
+    <% } %>
+
+    <!-- if result is empty -->
+    <% if(!programData.length) { %>
+      <p class="text-center">No Programs found!</p>
+    <% } %>
 
     <% if(termData.length) { %>
       <div class="form-group">
@@ -208,7 +209,7 @@
           <label for="terms">What Term would you like to view?</label>
           <br>
           <select name="terms" id="terms" class="form-control">
-            <option value="none" selected disabled hidden>Select an Term</option>
+            <option value="none" selected disabled hidden>Select a Term</option>
             <% for(var i = 0; i < termData.length; i++) { 
               switch(termData[i].semester) {
                 case 0: %>
@@ -225,8 +226,8 @@
                   <% break;
                 default: %>
                   <p>Invalid Term!</p>
+             <% } %>
            <% } %>
-         <% } %>
           </select>
           <br>
           <input type="submit" value="Search" class="btn btn-primary">

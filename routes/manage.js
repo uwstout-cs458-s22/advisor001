@@ -4,6 +4,7 @@ const log = require('loglevel');
 const { isUserLoaded } = require('../services/auth');
 const Course = require('../controllers/Course');
 const Term = require('../controllers/Term');
+const Program = require('../controllers/Program');
 
 module.exports = function () {
   const router = express.Router();
@@ -13,6 +14,7 @@ module.exports = function () {
     try {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
       const terms = await Term.fetchAll(req.session.session_token, 0, 100);
+      const programs = await Program.fetchAll(req.session.session_token, 0, 100);
       res.render('layout', {
         pageTitle: 'Advisor Management',
         group: 'manage',
@@ -21,7 +23,8 @@ module.exports = function () {
         role: req.session.user.role,
         enable: req.session.user.enable,
         courseData: courses,
-        termData: terms
+        termData: terms,
+        programData: programs,
       });
       log.info(
         `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s) and ${terms.length} term(s)`
