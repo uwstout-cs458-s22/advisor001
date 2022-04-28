@@ -30,24 +30,23 @@ module.exports = function () {
     }
   });
 
-  router.post('/users/edit/:userId', async (req, res, next) => {
+  router.post('/users/edit/:userId', isUserLoaded, async (req, res, next) => {
     try {
       const newValues = {
         enable: req.body.enabled ? 'true' : 'false',
         role: String(req.body.role),
       };
       await User.edit(req.session.session_token, req.params.userId, newValues);
-      res.redirect('/admin');
+      res.redirect(303, '/admin');
     } catch (error) {
       next(error);
     }
   });
 
-  router.get('/users/delete/:userID', async (req, res, next) => {
+  router.get('/users/delete/:userID', isUserLoaded, async (req, res, next) => {
     try {
-      const userID = req.params.userID;
-      await User.deleteUser(req.session.session_token, userID);
-      res.redirect('/admin');
+      await User.deleteUser(req.session.session_token, req.params.userID);
+      res.redirect(303, '/admin');
     } catch (error) {
       next(error);
     }

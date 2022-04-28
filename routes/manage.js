@@ -29,7 +29,7 @@ module.exports = function () {
     }
   });
 
-  router.post('/course/add/', async (req, res, next) => {
+  router.post('/course/add/', isUserLoaded, async (req, res, next) => {
     try {
       const course = {
         prefix: String(req.body.coursePrefix),
@@ -39,13 +39,13 @@ module.exports = function () {
         title: String(req.body.courseTitle),
       };
       await Course.create(req.session.session_token, course);
-      res.redirect('/manage');
+      res.redirect(303, '/manage');
     } catch (error) {
       next(error);
     }
   });
 
-  router.post('/course/edit/:id', async (req, res, next) => {
+  router.post('/course/edit/:id', isUserLoaded, async (req, res, next) => {
     try {
       const id = Number(req.params.id);
       const course = {
@@ -56,23 +56,23 @@ module.exports = function () {
         title: String(req.body.editTitle),
       };
       await Course.edit(req.session.session_token, id, course);
-      res.redirect('/manage');
+      res.redirect(303, '/manage');
     } catch (error) {
       next(error);
     }
   });
 
-  router.get('/course/delete/:id', async (req, res, next) => {
+  router.get('/course/delete/:id', isUserLoaded, async (req, res, next) => {
     try {
       const id = req.params.id;
       await Course.deleteCourse(req.session.session_token, id);
-      res.redirect('/manage');
+      res.redirect(303, '/manage');
     } catch (error) {
       next(error);
     }
   });
 
-  router.post('/term/add/', async (req, res, next) => {
+  router.post('/term/add/', isUserLoaded, async (req, res, next) => {
     try {
       const term = {
         title: String(req.body.termTitle),
@@ -80,7 +80,7 @@ module.exports = function () {
         semester: Number(req.body.termSemester),
       };
       await Term.create(req.session.session_token, term);
-      res.redirect('/manage');
+      res.redirect(303, '/manage');
     } catch (error) {
       next(error);
     }

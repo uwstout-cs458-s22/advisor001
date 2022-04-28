@@ -98,6 +98,9 @@ describe('Manage Route Tests', () => {
     Course.fetchAll.mockResolvedValue(null);
     Course.create.mockReset();
     Course.create.mockResolvedValue(null);
+    Course.edit.mockResolvedValue(null);
+    Course.deleteCourse.mockResolvedValue(null);
+    Term.create.mockResolvedValue(null);
     resetMockIsUserLoaded();
   });
 
@@ -150,7 +153,7 @@ describe('Manage Route Tests', () => {
     test('create course success', async () => {
       Course.create.mockResolvedValueOnce({});
       const response = await request(app).post(`/manage/course/add/`);
-      expect(response.statusCode).not.toBe(404);
+      expect(response.statusCode).toBe(303);
     });
 
     test('create course failure', async () => {
@@ -169,7 +172,7 @@ describe('Manage Route Tests', () => {
         suffix: 'NEW SUFFIX',
         credits: 1,
       });
-      expect(response.statusCode).not.toBe(404);
+      expect(response.statusCode).toBe(303);
     });
 
     test('edit course failure', async () => {
@@ -182,26 +185,20 @@ describe('Manage Route Tests', () => {
     test('Course.deleteCourse successful route', async () => {
       const data = dataForGetCourse(2, 1);
       Course.deleteCourse.mockResolvedValue(data[0]);
-      // Course id is being set by value in function, which is created from index + offset
-      expect(data[0].id).toBe('2');
-      expect(data[1].id).toBe('3');
       const response = await request(app).get(`/manage/course/delete/${data[0].id}`);
-      expect(response.statusCode).not.toBe(404);
-      // Line 34 does not get covered by the test, but the test below covers it.
-      expect(global.window.location.pathname).toEqual('/manage');
+      expect(response.statusCode).toBe(303);
     });
 
     test('Course.deleteCourse thrown error', async () => {
-      const response = await request(app).get(`/manage/course/delete/${undefined}`);
+      Course.deleteCourse.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/manage/course/delete/BADID`);
       expect(response.statusCode).toBe(500);
     });
 
     test('Term.create success', async () => {
       Term.create.mockResolvedValueOnce(mockTerm);
       const response = await request(app).post(`/manage/term/add/`);
-      expect(response.statusCode).not.toBe(404);
-      // Line 83 does not get covered by the test, but the test below covers it.
-      expect(global.window.location.pathname).toEqual('/manage');
+      expect(response.statusCode).toBe(303);
     });
 
     test('Term.create failure', async () => {
