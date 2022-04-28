@@ -65,6 +65,10 @@ describe('User controller tests', () => {
   });
 
   describe('create tests', () => {
+    beforeEach(() => {
+      axios.post.mockReset();
+      axios.get.mockReset();
+    });
     test('create - happy path create new', async () => {
       const user = {
         id: 4567,
@@ -164,9 +168,9 @@ describe('User controller tests', () => {
   });
 
   describe('edit tests', () => {
-
     test('edit - valid edit', async () => {
-      const user = { // Test user values
+      const user = {
+        // Test user values
         id: 5678,
         email: 'test3r@testy.com',
         enable: true,
@@ -181,15 +185,15 @@ describe('User controller tests', () => {
         JSON.stringify(JSON.parse(JSON.stringify(user)))
       );
 
-      expect(axios.put).toHaveBeenCalledWith( 
-        "/users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c", 
-        "{\"id\":5678,\"email\":\"test3r@testy.com\",\"enable\":true,\"role\":\"user\",\"userId\":\"user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c\"}"
+      expect(axios.put).toHaveBeenCalledWith(
+        '/users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+        '{"id":5678,"email":"test3r@testy.com","enable":true,"role":"user","userId":"user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c"}'
       );
       expect(result).toEqual(user);
     });
 
     test('edit - error response', async () => {
-      const user = { // Test user values
+      const user = {
         id: 5678,
         email: 'test3r@testy.com',
         enable: true,
@@ -198,52 +202,110 @@ describe('User controller tests', () => {
       };
 
       axios.put.mockResolvedValueOnce({ status: 500, data: { Error: 'Internal Database Error' } });
-      await expect( User.edit(
-        'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
-        'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
-        JSON.stringify(JSON.parse(JSON.stringify(user))))
+      await expect(
+        User.edit(
+          'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
+          'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+          JSON.stringify(JSON.parse(JSON.stringify(user)))
+        )
       ).rejects.toThrow('Error 500: Internal Database Error');
-      expect(axios.put).toHaveBeenCalledWith( 
-        "/users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c", 
-        "{\"id\":5678,\"email\":\"test3r@testy.com\",\"enable\":true,\"role\":\"user\",\"userId\":\"user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c\"}"
+      expect(axios.put).toHaveBeenCalledWith(
+        '/users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+        '{"id":5678,"email":"test3r@testy.com","enable":true,"role":"user","userId":"user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c"}'
       );
     });
-  });
-
-  describe('delete tests', () => {
-    test('delete - valid delete', async () => {
+    test('edit - missing email', async () => {
       const user = {
-        id: 4567,
-        email: 'barb26@example.com',
+        id: 5678,
         enable: true,
-        role: 'admin',
+        role: 'user',
         userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
       };
-      axios.delete.mockResolvedValueOnce({
-        data: user,
-        status: 200,
-      });
-      const result = await User.deleteUser(
-        'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
-        'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
-      );
 
-      expect(axios.delete).toHaveBeenCalledWith(
-        'users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
-      );
-      expect(result.status).toEqual(200);
-    });
-
-    test('delete - Required Parameters Missing', async () => {
-      axios.delete.mockResolvedValueOnce({
+      axios.put.mockResolvedValueOnce({
         status: 400,
         data: { Error: 'Required Parameters Missing' },
       });
 
       await expect(
-        User.deleteUser('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', undefined)
+        User.edit(user.userId, JSON.stringify(JSON.parse(JSON.stringify(user))))
       ).rejects.toThrow('Error 400: Required Parameters Missing');
-      expect(axios.delete).toHaveBeenCalledWith('users/' + undefined);
+      expect(axios.put).toHaveBeenCalledWith(`/users/${JSON.stringify(user)}`, undefined);
+    });
+
+    test('edit - missing enable', async () => {
+      const user = {
+        id: 5678,
+        email: 'test3r@testy.com',
+        role: 'user',
+        userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+      };
+
+      axios.put.mockResolvedValueOnce({
+        status: 400,
+        data: { Error: 'Required Parameters Missing' },
+      });
+
+      await expect(
+        User.edit(user.userId, JSON.stringify(JSON.parse(JSON.stringify(user))))
+      ).rejects.toThrow('Error 400: Required Parameters Missing');
+      expect(axios.put).toHaveBeenCalledWith(`/users/${JSON.stringify(user)}`, undefined);
+    });
+
+    test('edit - missing role', async () => {
+      const user = {
+        id: 5678,
+        email: 'test3r@testy.com',
+        enable: true,
+        userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+      };
+
+      axios.put.mockResolvedValueOnce({
+        status: 400,
+        data: { Error: 'Required Parameters Missing' },
+      });
+
+      await expect(
+        User.edit(user.userId, JSON.stringify(JSON.parse(JSON.stringify(user))))
+      ).rejects.toThrow('Error 400: Required Parameters Missing');
+      expect(axios.put).toHaveBeenCalledWith(`/users/${JSON.stringify(user)}`, undefined);
+    });
+
+    describe('delete tests', () => {
+      test('delete - valid delete', async () => {
+        const user = {
+          id: 4567,
+          email: 'barb26@example.com',
+          enable: true,
+          role: 'admin',
+          userId: 'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c',
+        };
+        axios.delete.mockResolvedValueOnce({
+          data: user,
+          status: 200,
+        });
+        const result = await User.deleteUser(
+          'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
+          'user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
+        );
+
+        expect(axios.delete).toHaveBeenCalledWith(
+          'users/user-test-6db45fe7-6b2a-456f-9f53-0e2d2ebb320c'
+        );
+        expect(result.status).toEqual(200);
+      });
+
+      test('delete - Required Parameters Missing', async () => {
+        axios.delete.mockResolvedValueOnce({
+          status: 400,
+          data: { Error: 'Required Parameters Missing' },
+        });
+
+        await expect(
+          User.deleteUser('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', undefined)
+        ).rejects.toThrow('Error 400: Required Parameters Missing');
+        expect(axios.delete).toHaveBeenCalledWith('users/' + undefined);
+      });
     });
   });
 });
