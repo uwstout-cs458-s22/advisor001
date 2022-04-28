@@ -134,7 +134,6 @@ describe('Admin Route Tests', () => {
     test('User.edit successful route - enabled: false', async () => {
       const data = dataForGetUser(1);
       User.edit.mockResolvedValue(data[0]);
-      expect(data[0].userId).toBe('user-test-someguid1');
       const response = await request(app).post(`/admin/users/edit/${data[0].userId}`);
       expect(response.statusCode).toBe(303);
     });
@@ -157,7 +156,6 @@ describe('Admin Route Tests', () => {
     test('User.deleteUser successful route', async () => {
       const data = dataForGetUser(1);
       User.deleteUser.mockResolvedValue(data[0]);
-      expect(data[0].userId).toBe('user-test-someguid1');
       const response = await request(app).get(`/admin/users/delete/${data[0].userId}`);
       expect(response.statusCode).toBe(303);
     });
