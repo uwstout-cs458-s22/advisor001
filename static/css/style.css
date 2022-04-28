@@ -116,11 +116,18 @@ a:focus {
   align-items: stretch;
 }
 #sidebar {
+  /* Added position fixed Hovland 27 Apr 22*/
+  position: absolute;
   min-width: 250px;
   max-width: 350px;
   background: #3458e8;
   color: #fff;
   transition: all 0.3s;
+}
+/* Added .options-group Hovland 27 Apr 22*/
+.options-group{
+  width: 80vw;
+  margin-left: 20vw;
 }
 #sidebar.active {
   margin-left: -250px;
