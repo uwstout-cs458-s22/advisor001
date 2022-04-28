@@ -64,5 +64,57 @@ describe('Term controller tests', () => {
         semester: 2,
       });
     });
+
+    test('create - missing title error', async () => {
+
+      axios.post.mockResolvedValueOnce({ status: 400, data: { Error: 'Missing Parameter' } });
+
+      await expect(
+        Term.create('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', {
+          startyear: 2022,
+          semester: 2,
+        })
+      ).rejects.toThrow('Advisor API Error 400: Missing Parameter');
+      
+      expect(axios.post).toHaveBeenCalledWith('term', {
+        startyear: 2022,
+        semester: 2,
+      });
+    });
+
+    test('create - missing startyear error', async () => {
+
+      axios.post.mockResolvedValueOnce({ status: 400, data: { Error: 'Missing Parameter' } });
+
+      await expect(
+        Term.create('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', {
+          title: 'term1',
+          semester: 2,
+        })
+      ).rejects.toThrow('Advisor API Error 400: Missing Parameter');
+      
+      expect(axios.post).toHaveBeenCalledWith('term', {
+        title: 'term1',
+        semester: 2,
+      });
+    });
+
+    test('create - missing semester error', async () => {
+
+      axios.post.mockResolvedValueOnce({ status: 400, data: { Error: 'Missing Parameter' } });
+
+      await expect(
+        Term.create('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', {
+          title: 'term1',
+          startyear: 2022,
+        })
+      ).rejects.toThrow('Advisor API Error 400: Missing Parameter');
+      
+      expect(axios.post).toHaveBeenCalledWith('term', {
+        title: 'term1',
+        startyear: 2022,
+      });
+    });
+
   });
 });
