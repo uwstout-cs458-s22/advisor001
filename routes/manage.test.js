@@ -258,5 +258,17 @@ describe('Manage Route Tests', () => {
       const response = await request(app).post('/manage/term/add/');
       expect(response.statusCode).toBe(500);
     });
+
+    test('Program.create success', async () => {
+      Program.create.mockResolvedValueOnce(mockProgram);
+      const response = await request(app).post(`/manage/program/add/`);
+      expect(response.statusCode).toBe(303);
+    });
+
+    test('Program.create failure', async () => {
+      Program.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post('/manage/program/add/');
+      expect(response.statusCode).toBe(500);
+    });
   });
 });

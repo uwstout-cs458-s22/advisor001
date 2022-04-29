@@ -91,5 +91,18 @@ module.exports = function () {
     }
   });
 
+  router.post('/program/add/', isUserLoaded, async (req, res, next) => {
+    try {
+      const program = {
+        title: String(req.body.programTitle),
+        description: String(req.body.programDescription),
+      };
+      await Program.create(req.session.session_token, program);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return router;
 };
