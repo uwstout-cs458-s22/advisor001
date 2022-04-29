@@ -128,6 +128,34 @@ describe('Admin Route Tests', () => {
       }
     });
 
+    test('failed user role, redirect to advise', async () => {
+      // create invalid user
+      const mockUser = new UserModel({
+        id: '1000',
+        email: 'master@uwstout.edu',
+        userId: 'user-test-someguid',
+        enable: 'true',
+        role: 'director', // use director as that is the highest user that cannot access this page
+      });
+      
+      // sign in with invalid user account
+      auth.isUserLoaded.mockReset();
+      auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
+        req.session = {
+          session_token: 'thisisatoken',
+          user: mockUser,
+        };
+        next();
+      });
+
+      const response = await request(app).get('/admin');
+      const doc = new JSDOM(response.text).window.document;
+
+      // check the main navbar
+      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/advise');
+
+    });
+
     test('User.fetchAll thrown error', async () => {
       User.fetchAll.mockRejectedValue(HttpError(500, `Advisor API Error`));
       const response = await request(app).get('/admin');

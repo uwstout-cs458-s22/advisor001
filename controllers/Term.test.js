@@ -99,3 +99,47 @@ describe('Term controller tests', () => {
     });
   });
 });
+
+describe('fetchAll tests', () => {
+  test('fetchAll - happy path test', async () => {
+    const terms = [
+      {
+        id: 1,
+        title: 'term1',
+        startyear: 2022,
+        semester: 0,
+      },
+      {
+        id: 2,
+        title: 'term2',
+        startyear: 2022,
+        semester: 2,
+      },
+    ];
+    axios.get.mockResolvedValueOnce({ data: terms, status: 200 });
+
+    const result = await Term.fetchAll('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', 0, 100);
+
+    expect(axios.get).toHaveBeenCalledWith('term?limit=100&offset=0');
+    expect(result).toEqual(terms);
+  });
+
+  test('fetchAll -no records returned', async () => {
+    const terms = [];
+    axios.get.mockResolvedValueOnce({ status: 200, data: terms });
+    const result = await Term.fetchAll('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', 0, 100);
+    expect(axios.get).toHaveBeenCalledWith('term?limit=100&offset=0');
+    expect(result).toHaveLength(0);
+  });
+
+  test('fetchAll - error response', async () => {
+    axios.get.mockResolvedValueOnce({
+      status: 500,
+      data: { error: { status: 500, message: 'Internal Server Error' } },
+    });
+    await expect(
+      Term.fetchAll('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', 0, 100)
+    ).rejects.toThrow('Advisor API Error 500: Internal Server Error');
+    expect(axios.get).toHaveBeenCalledWith('term?limit=100&offset=0');
+  });
+});

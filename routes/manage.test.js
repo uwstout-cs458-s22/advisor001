@@ -1,12 +1,15 @@
 const request = require('supertest');
 const { JSDOM } = require('jsdom');
 const log = require('loglevel');
+const UserModel = require('../models/User');
 const CourseModel = require('../models/Course');
 const TermModel = require('../models/Term');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
 const Term = require('../controllers/Term');
+const Program = require('../controllers/Program');
 const HttpError = require('http-errors');
+const ProgramModel = require('../models/Program');
 global.window = { location: { pathname: '/manage' } };
 
 beforeAll(() => {
@@ -26,6 +29,14 @@ jest.mock('../controllers/Term', () => {
   return {
     create: jest.fn(),
     edit: jest.fn(),
+    fetchAll: jest.fn(),
+  };
+});
+
+jest.mock('../controllers/Program', () => {
+  return {
+    fetchAll: jest.fn(),
+    create: jest.fn(),
   };
 });
 
@@ -53,6 +64,12 @@ const mockTerm = new TermModel({
   title: 'TITLE',
   startyear: 2020,
   semester: 2,
+});
+
+const mockProgram = new ProgramModel({
+  id: '1000',
+  title: 'TITLE',
+  description: 'DESCRIPTION',
 });
 
 jest.mock('../services/auth', () => {
@@ -97,9 +114,23 @@ function dataForGetTerm(rows, offset = 0) {
     const value = i + offset;
     const params = {
       id: `${value}`,
-      title: `TITLE`,
-      startyear: 2020,
+      title: `TITLE${value}`,
+      startyear: `${value}`,
       semester: `${value}`,
+    };
+    data.push(new TermModel(params));
+  }
+  return data;
+}
+
+function dataForGetProgram(row, offset = 0) {
+  const data = [];
+  for (let i = 1; i <= row; i++) {
+    const value = i + offset;
+    const params = {
+      id: `${value}`,
+      title: `TITLE${value}`,
+      description: `DESCRIPTION${value}`,
     };
     data.push(new TermModel(params));
   }
@@ -120,7 +151,7 @@ describe('Manage Route Tests', () => {
   describe('Manage Index Page Tests', () => {
     test('should make a call to fetchAll', async () => {
       const data = dataForGetCourse(3);
-      Course.fetchAll.mockResolvedValueOnce(data);
+      Course.fetchAll.mockResolvedValue(data);
       await request(app).get('/manage');
       expect(Course.fetchAll.mock.calls).toHaveLength(1);
       expect(Course.fetchAll.mock.calls[0]).toHaveLength(3);
@@ -140,9 +171,40 @@ describe('Manage Route Tests', () => {
       expect(response.statusCode).toBe(500);
     });
 
+    test('failed user role, redirect to advise', async () => {
+      const response = await request(app).get('/manage');
+      const doc = new JSDOM(response.text).window.document;
+
+      // check the main navbar
+      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/advise');
+    });
+
     test('basic page checks', async () => {
+      // create valid user
+      const mockUser = new UserModel({
+        id: '1000',
+        email: 'master@uwstout.edu',
+        userId: 'user-test-someguid',
+        enable: 'true',
+        role: 'director', // use director as that is the lowest user role that can access this page
+      });
+
+      // sign in with valid user account
+      auth.isUserLoaded.mockReset();
+      auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
+        req.session = {
+          session_token: 'thisisatoken',
+          user: mockUser,
+        };
+        next();
+      });
+
       const data = dataForGetCourse(3);
+      const termData = dataForGetTerm(3);
+      const programData = dataForGetProgram(3);
       Course.fetchAll.mockResolvedValueOnce(data);
+      Term.fetchAll.mockResolvedValueOnce(termData);
+      Program.fetchAll.mockResolvedValueOnce(programData);
       const response = await request(app).get('/manage');
       const doc = new JSDOM(response.text).window.document;
 
@@ -234,14 +296,23 @@ describe('Manage Route Tests', () => {
         startYear: 2000,
         semester: 1,
       });
-      expect(response.statusCode).not.toBe(404);
-      // Line 114 does not get covered by the test, but the test below covers it.
-      expect(global.window.location.pathname).toEqual('/manage');
+      expect(response.statusCode).toBe(303);
     });
     test('Term,edit failure', async () => {
-      const data = dataForGetTerm(1);
       Term.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
-      const response = await request(app).get(`/manage/term/edit/${data[0].id}`);
+      const response = await request(app).get(`/manage/term/edit/BADID`);
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Program.create success', async () => {
+      Program.create.mockResolvedValueOnce(mockProgram);
+      const response = await request(app).post(`/manage/program/add/`);
+      expect(response.statusCode).toBe(303);
+    });
+
+    test('Program.create failure', async () => {
+      Program.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post('/manage/program/add/');
       expect(response.statusCode).toBe(500);
     });
   });
