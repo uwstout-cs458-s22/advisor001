@@ -12,18 +12,29 @@ module.exports = function () {
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
-      res.render('layout', {
-        pageTitle: 'Advisor Management',
-        group: 'manage',
-        template: 'index',
-        email: req.session.user.email,
-        role: req.session.user.role,
-        enable: req.session.user.enable,
-        data: courses,
-      });
-      log.info(
-        `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s)`
-      );
+      if (req.session.user.role === "director" || req.session.user.role === "admin") {
+        res.render('layout', {
+          pageTitle: 'Advisor Management',
+          group: 'manage',
+          template: 'index',
+          email: req.session.user.email,
+          role: req.session.user.role,
+          enable: req.session.user.enable,
+          data: courses,
+        });
+        log.info(
+          `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s)`
+        );
+      } else {
+        res.render('layout', {
+          pageTitle: 'Advisor',
+          group: 'advise',
+          template: 'index',
+          email: req.session.user.email,
+          role: req.session.user.role,
+          enable: req.session.user.enable,
+        });
+      }
     } catch (error) {
       next(error);
     }

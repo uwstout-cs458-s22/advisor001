@@ -1,6 +1,7 @@
 const request = require('supertest');
 const { JSDOM } = require('jsdom');
 const log = require('loglevel');
+const UserModel = require('../models/User');
 const CourseModel = require('../models/Course');
 const TermModel = require('../models/Term');
 const auth = require('../services/auth');
@@ -124,7 +125,35 @@ describe('Manage Route Tests', () => {
       expect(response.statusCode).toBe(500);
     });
 
-    test('basic page checks', async () => {
+    test('failed user role, redirect to advise', async () => {
+      const response = await request(app).get('/manage');
+      const doc = new JSDOM(response.text).window.document;
+
+      // check the main navbar
+      expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/advise');
+
+    });
+
+    test( 'basic page checks', async () => {
+      // create valid user
+      const mockUser = new UserModel({
+        id: '1000',
+        email: 'master@uwstout.edu',
+        userId: 'user-test-someguid',
+        enable: 'true',
+        role: 'director', // use director as that is the lowest user role that can access this page
+      });
+      
+      // sign in with valid user account
+      auth.isUserLoaded.mockReset();
+      auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
+        req.session = {
+          session_token: 'thisisatoken',
+          user: mockUser,
+        };
+        next();
+      });
+
       const data = dataForGetCourse(3);
       Course.fetchAll.mockResolvedValueOnce(data);
       const response = await request(app).get('/manage');
@@ -132,7 +161,7 @@ describe('Manage Route Tests', () => {
 
       // check the main navbar
       expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/manage');
-
+      
       // count the rows
       const rows = doc.querySelectorAll('.card-body>table>tbody>tr');
       expect(rows).toHaveLength(data.length);
