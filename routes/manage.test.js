@@ -7,7 +7,9 @@ const TermModel = require('../models/Term');
 const auth = require('../services/auth');
 const Course = require('../controllers/Course');
 const Term = require('../controllers/Term');
+const Program = require('../controllers/Program');
 const HttpError = require('http-errors');
+const ProgramModel = require('../models/Program');
 global.window = { location: { pathname: '/manage' } };
 
 beforeAll(() => {
@@ -25,6 +27,14 @@ jest.mock('../controllers/Course', () => {
 
 jest.mock('../controllers/Term', () => {
   return {
+    create: jest.fn(),
+    fetchAll: jest.fn(),
+  };
+});
+
+jest.mock('../controllers/Program', () => {
+  return {
+    fetchAll: jest.fn(),
     create: jest.fn(),
   };
 });
@@ -53,6 +63,12 @@ const mockTerm = new TermModel({
   title: 'TITLE',
   startyear: 2020,
   semester: 2,
+});
+
+const mockProgram = new ProgramModel({
+  id: '1000',
+  title: 'TITLE',
+  description: 'DESCRIPTION',
 });
 
 jest.mock('../services/auth', () => {
@@ -91,6 +107,35 @@ function dataForGetCourse(rows, offset = 0) {
   return data;
 }
 
+function dataForGetTerm(rows, offset = 0) {
+  const data = [];
+  for (let i = 1; i <= rows; i++) {
+    const value = i + offset;
+    const params = {
+      id: `${value}`,
+      title: `TITLE${value}`,
+      startyear: `${value}`,
+      semester: `${value}`,
+    };
+    data.push(new TermModel(params));
+  }
+  return data;
+}
+
+function dataForGetProgram(row, offset = 0) {
+  const data = [];
+  for (let i = 1; i <= row; i++) {
+    const value = i + offset;
+    const params = {
+      id: `${value}`,
+      title: `TITLE${value}`,
+      description: `DESCRIPTION${value}`,
+    };
+    data.push(new TermModel(params));
+  }
+  return data;
+}
+
 const app = require('../app')();
 
 describe('Manage Route Tests', () => {
@@ -105,7 +150,7 @@ describe('Manage Route Tests', () => {
   describe('Manage Index Page Tests', () => {
     test('should make a call to fetchAll', async () => {
       const data = dataForGetCourse(3);
-      Course.fetchAll.mockResolvedValueOnce(data);
+      Course.fetchAll.mockResolvedValue(data);
       await request(app).get('/manage');
       expect(Course.fetchAll.mock.calls).toHaveLength(1);
       expect(Course.fetchAll.mock.calls[0]).toHaveLength(3);
@@ -155,7 +200,11 @@ describe('Manage Route Tests', () => {
       });
 
       const data = dataForGetCourse(3);
+      const termData = dataForGetTerm(3);
+      const programData = dataForGetProgram(3);
       Course.fetchAll.mockResolvedValueOnce(data);
+      Term.fetchAll.mockResolvedValueOnce(termData);
+      Program.fetchAll.mockResolvedValueOnce(programData);
       const response = await request(app).get('/manage');
       const doc = new JSDOM(response.text).window.document;
 
@@ -236,6 +285,18 @@ describe('Manage Route Tests', () => {
     test('Term.create failure', async () => {
       Term.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
       const response = await request(app).post('/manage/term/add/');
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Program.create success', async () => {
+      Program.create.mockResolvedValueOnce(mockProgram);
+      const response = await request(app).post(`/manage/program/add/`);
+      expect(response.statusCode).toBe(303);
+    });
+
+    test('Program.create failure', async () => {
+      Program.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post('/manage/program/add/');
       expect(response.statusCode).toBe(500);
     });
   });

@@ -4,6 +4,7 @@ const log = require('loglevel');
 const { isUserLoaded } = require('../services/auth');
 const Course = require('../controllers/Course');
 const Term = require('../controllers/Term');
+const Program = require('../controllers/Program');
 
 module.exports = function () {
   const router = express.Router();
@@ -12,6 +13,8 @@ module.exports = function () {
   router.get('/', isUserLoaded, async (req, res, next) => {
     try {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
+      const terms = await Term.fetchAll(req.session.session_token, 0, 100);
+      const programs = await Program.fetchAll(req.session.session_token, 0, 100);
       if (req.session.user.role === "director" || req.session.user.role === "admin") {
         res.render('layout', {
           pageTitle: 'Advisor Management',
@@ -20,10 +23,12 @@ module.exports = function () {
           email: req.session.user.email,
           role: req.session.user.role,
           enable: req.session.user.enable,
-          data: courses,
+          courseData: courses,
+          termData: terms,
+          programData: programs,
         });
         log.info(
-          `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s)`
+          `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s) and ${terms.length} term(s)`
         );
       } else {
         res.render('layout', {
@@ -92,6 +97,19 @@ module.exports = function () {
       };
       await Term.create(req.session.session_token, term);
       res.redirect('/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post('/program/add/', isUserLoaded, async (req, res, next) => {
+    try {
+      const program = {
+        title: String(req.body.programTitle),
+        description: String(req.body.programDescription),
+      };
+      await Program.create(req.session.session_token, program);
+      res.redirect(303, '/manage');
     } catch (error) {
       next(error);
     }

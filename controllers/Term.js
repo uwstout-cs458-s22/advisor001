@@ -21,6 +21,24 @@ async function create(sessionToken, term) {
   }
 }
 
+async function fetchAll(sessionToken, offset, limit) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.get(`term?limit=${limit}&offset=${offset}`);
+  if (response.status === 200) {
+    const deSerializedData = response.data.map(deSerializeTerm);
+    const terms = deSerializedData.map((params) => new Term(params));
+    log.debug(
+      `Advisor API Success: Retrieved ${terms.length} Term(s) with offset=${offset}, limit=${limit}`
+    );
+    return terms;
+  } else {
+    throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.error.message}`);
+  }
+}
+
 module.exports = {
   create,
+  fetchAll
 };
