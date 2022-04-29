@@ -13,7 +13,8 @@ module.exports = function () {
     try {
       // In the future it would be helpful to get an amount of all users in the database and replace the hardcoded value.
       const users = await User.fetchAll(req.session.session_token, 0, 10000000);
-      res.render('layout', {
+      if (req.session.user.role === "admin") {
+        res.render('layout', {
         pageTitle: 'Advisor Admin',
         group: 'admin',
         template: 'index',
@@ -25,6 +26,16 @@ module.exports = function () {
       log.info(
         `${req.method} ${req.originalUrl} success: rendering admin page with ${users.length} user(s)`
       );
+      } else {
+        res.render('layout', {
+          pageTitle: 'Advisor',
+          group: 'advise',
+          template: 'index',
+          email: req.session.user.email,
+          role: req.session.user.role,
+          enable: req.session.user.enable,
+        });
+      }
     } catch (error) {
       next(error);
     }
