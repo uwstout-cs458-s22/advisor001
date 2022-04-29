@@ -15,20 +15,31 @@ module.exports = function () {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
       const terms = await Term.fetchAll(req.session.session_token, 0, 100);
       const programs = await Program.fetchAll(req.session.session_token, 0, 100);
-      res.render('layout', {
-        pageTitle: 'Advisor Management',
-        group: 'manage',
-        template: 'index',
-        email: req.session.user.email,
-        role: req.session.user.role,
-        enable: req.session.user.enable,
-        courseData: courses,
-        termData: terms,
-        programData: programs,
-      });
-      log.info(
-        `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s) and ${terms.length} term(s)`
-      );
+      if (req.session.user.role === "director" || req.session.user.role === "admin") {
+        res.render('layout', {
+          pageTitle: 'Advisor Management',
+          group: 'manage',
+          template: 'index',
+          email: req.session.user.email,
+          role: req.session.user.role,
+          enable: req.session.user.enable,
+          courseData: courses,
+          termData: terms,
+          programData: programs,
+        });
+        log.info(
+          `${req.method} ${req.originalUrl} success: rendering manage page with ${courses.length} course(s) and ${terms.length} term(s)`
+        );
+      } else {
+        res.render('layout', {
+          pageTitle: 'Advisor',
+          group: 'advise',
+          template: 'index',
+          email: req.session.user.email,
+          role: req.session.user.role,
+          enable: req.session.user.enable,
+        });
+      }
     } catch (error) {
       next(error);
     }
