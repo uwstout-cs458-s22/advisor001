@@ -169,11 +169,7 @@
                   </div>
                   <!-- User Status -->
                   <div class="form-group form-check">
-                    <% if (data[i].enable) { %>
-                    <input type="checkbox" class="form-check-input" id="enabledCheck" name="enabled" checked>
-                    <% } else { %>
-                    <input type="checkbox" class="form-check-input" id="enabledCheck" name="enabled">
-                    <% } %>
+                    <input type="checkbox" class="form-check-input" id="enabledCheck" name="enabled" <% if (data[i].enable) { %> checked <% } %> >
                     <label class="form-check-label" for="enabled">User Enabled</label>
                   </div>
                   <!-- User Email -->
