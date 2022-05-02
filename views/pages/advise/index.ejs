@@ -1,3 +1,25 @@
-<div>
-  This will be the advisement page - late semester work
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-pills w-100">
+      <li class="nav-pill active">
+        <a class="nav-link">Welcome to the Advise Page!</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <form>
+        <label for="corseReq">Course Requirements of Your Program:</label>
+        <br>
+        <select name="courseReq" id="courseReq" class="form-control">
+          <option value="none" selected disabled hidden>Select a Term</option>
+          <option value="term1">Term 1</option>
+          <option value="term2">Term 2</option>
+          <option value="term3">Term 3</option>
+          <option value="term3">Term 4</option>
+        </select>
+        <br>
+        <input type="submit" value="Search"  class="btn btn-primary">
+      </form>
+    </div>
 </div>
