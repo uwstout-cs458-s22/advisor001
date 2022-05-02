@@ -37,7 +37,7 @@
 <div class="alert alert-danger" role="alert"><%- messages.error %></div>
 <% } %>
 
-<div class="card">
+<div class="card"> 
   <div class="card-header">
     <ul class="nav nav-pills w-100">
       <li class="nav-pill active">
@@ -59,7 +59,7 @@
           <th scope="col">Department</th>
           <th scope="col">Number</th>
           <th scope="col">Credits</th>
-          <th width="200px">Action</th>
+          <th width="150px">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -170,37 +170,50 @@
       </tbody>
     </table>
     <% } %>
+  </div>
 
     <!-- if result is empty -->
     <% if(!courseData.length) { %>
     <p class="text-center">No Courses found!</p>
     <% } %>
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProgramModal">Add Program</button>
 
-    <!-- if result is empty -->
-    <% if(!termData.length) { %>
-      <p class="text-center">No Terms found!</p>
-    <% } %>
-
-    <% if(programData.length) { %>
-      <div class="form-group">
-        <form action="">
-          <label for="programs">What Program would you like to view?</label>
-          <br>
-          <select name="programs" id="programs" class="form-control">
-            <option value="none" selected disabled hidden>Select a Program</option>
-            <% for(var i = 0; i < programData.length; i++) { %>
-              <option value="<%=programData[i].id%>"><%= programData[i].title %></option>
-            <% } %>
-          </select>
-          <br>
-          <input type="submit" value="Search" class="btn btn-primary">
-        </form>
+    <div class="card">
+      <div class="card-header">
+        <ul class="nav nav-pills w-100">
+          <li class="nav-pill active">
+            <a class="nav-link">Programs</a>
+          </li>
+          <li class="nav-pill ml-auto">
+            <a class="nav-link active" data-toggle="modal" data-target="#addProgramModal">Add Program</a>
+          </li>
+        </ul>
       </div>
-    <% } %>
+      <div class="card-body">
+        <% if(programData.length) { %>
+        <table class="table" id="programs-table">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th width="150px">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i = 0; i< programData.length; i++) { %>
+            <tr>
+              <th scope="row" class="align-middle"><%= programData[i].id %></th>
+              <td class="align-middle"><%= programData[i].title %></td>
+              <td class="align-middle"><%= programData[i].description %></td>
+              <td class="align-middle">
+                <a class="btn btn-secondary edit" data-toggle="modal" data-target="#">Edit</a>
+                <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="#" >Delete</a>
+              </td>
+            </tr>
+    
 
-<!-- Add Term Modal -->
+<!-- Add Program Modal -->
 <div id="addProgramModal" class="modal fade" role="dialog">
   <div class="modal-dialog modal-content">
     <div class="modal-header">
@@ -228,52 +241,54 @@
   </div>
 </div>
 
+  <!-- Closing for loop -->
+  <% } %>
+</tbody>
+</table>
+<% } %>
+  </div>
+</div>
+
     <!-- if result is empty -->
     <% if(!programData.length) { %>
       <p class="text-center">No Programs found!</p>
     <% } %>
 
-    <% if(termData.length) { %>
-      <div class="form-group">
-        <form action="">
-          <label for="terms">What Term would you like to view?</label>
-          <br>
-          <select name="terms" id="terms" class="form-control">
-            <option value="none" selected disabled hidden>Select a Term</option>
-            <% for(var i = 0; i < termData.length; i++) { 
-              switch(termData[i].semester) {
-                case 0: %>
-                 <option value="<%=termData[i].id%>">Fall <%= termData[i].startyear %></option>
-                  <% break;
-                case 1: %>
-                  <option value="<%=termData[i].id%>">Winter <%= termData[i].startyear %></option>
-                  <% break;
-                case 2: %>
-                  <option value="<%=termData[i].id%>">Spring <%= termData[i].startyear %></option>
-                  <% break;
-                case 3: %>
-                  <option value="<%=termData[i].id%>">Summer <%= termData[i].startyear %></option>
-                  <% break;
-                default: %>
-                  <p>Invalid Term!</p>
-             <% } %>
-           <% } %>
-          </select>
-          <br>
-          <input type="submit" value="Search" class="btn btn-primary">
-        </form>
-      </div>
-    <% } %>
-
-    <!-- if result is empty -->
-    <% if(!termData.length) { %>
-      <p class="text-center">No Terms found!</p>
-    <% } %>
-
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTermModal">Add Term</button>
-
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-pills w-100">
+      <li class="nav-pill active">
+        <a class="nav-link">Terms</a>
+      </li>
+      <li class="nav-pill ml-auto">
+        <a class="nav-link active" data-toggle="modal" data-target="#addTermModal">Add Term</a>
+      </li>
+    </ul>
   </div>
-</div>
+  <div class="card-body">
+    <% if(termData.length) { %>
+    <table class="table" id="terms-table">
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Title</th>
+          <th scope="col">Year</th>
+          <th scope="col">Semester</th>
+          <th width="150px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(var i = 0; i< termData.length; i++) { %>
+        <tr>
+          <th scope="row" class="align-middle"><%= termData[i].id %></th>
+          <td class="align-middle"><%= termData[i].title %></td>
+          <td class="align-middle"><%= termData[i].startyear %></td>
+          <td class="align-middle"><%= termData[i].semester %></td>
+          <td class="align-middle">
+            <a class="btn btn-secondary edit" data-toggle="modal" data-target="#editTermModal-<%=i%>">Edit</a>
+            <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="#" >Delete</a>
+          </td>
+        </tr>
 
 <!-- Add Term Modal -->
 <div id="addTermModal" class="modal fade" role="dialog">
@@ -309,9 +324,64 @@
   </div>
 </div>
 
+<!-- Edit Term Modal -->
+<div id="editTermModal-<%=i%>" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Edit Term</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="editTermForm" method="POST" action="/manage/term/edit/<%= termData[i].id %>">
+        <!-- Title -->
+        <div class="form-group">
+          <label for="editTermTitle">Term Name: </label>
+          <input class="form-control" type="text" name="editTermTitle" value="<%= termData[i].title %>"></input>
+        </div>
+        <!-- Start Year -->
+        <div class="form-group">
+          <label for="editTermYear">Start Year: </label>
+          <input class="form-control" type="number" min="2022" max="9999" name="editTermYear" value="<%= termData[i].startyear %>"></input>
+        </div>
+        <!-- Semester -->
+        <div class="form-group">
+          <label for="editTermSemester">Semester: </label>
+          <input class="form-control" type="number" min="1" max="2" name="editTermSemester" value="<%= termData[i].semester %>"></input>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="submit" class="btn btn-success">Save</button>
+          <button class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Closing for loop -->
+  <% } %>
+</tbody>
+</table>
+<% } %>
+
+    <!-- if result is empty -->
+    <% if(!termData.length) { %>
+      <p class="text-center">No Terms found!</p>
+    <% } %>
+
+</div>
+</div>  
+
 <script>
   //Adding Table pages, search bar, and sorting using JQuery
   $(document).ready(function () {
-    $('#courses-table').DataTable();
+    $('#courses-table').DataTable( {
+      "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+    });
+    $('#programs-table').DataTable( {
+      "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+    });
+    $('#terms-table').DataTable( {
+      "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+    });
   });
 </script>

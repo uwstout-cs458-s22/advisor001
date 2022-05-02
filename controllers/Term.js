@@ -21,6 +21,21 @@ async function create(sessionToken, term) {
   }
 }
 
+async function edit(sessionToken, id, term) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.put(`term/${id}`, term);
+  if (response.status === 200) {
+    const termParms = deSerializeTerm(response.data);
+    const terms = new Term(termParms);
+    log.debug(`Advisor API Success: Edited (${response.status}) Term ${terms.id} (${terms.title})`);
+    return response;
+  } else {
+    throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
+  }
+}
+
 async function fetchAll(sessionToken, offset, limit) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
@@ -40,5 +55,6 @@ async function fetchAll(sessionToken, offset, limit) {
 
 module.exports = {
   create,
-  fetchAll
+  edit,
+  fetchAll,
 };

@@ -15,7 +15,7 @@ module.exports = function () {
       const courses = await Course.fetchAll(req.session.session_token, 0, 100);
       const terms = await Term.fetchAll(req.session.session_token, 0, 100);
       const programs = await Program.fetchAll(req.session.session_token, 0, 100);
-      if (req.session.user.role === "director" || req.session.user.role === "admin") {
+      if (req.session.user.role === 'director' || req.session.user.role === 'admin') {
         res.render('layout', {
           pageTitle: 'Advisor Management',
           group: 'manage',
@@ -98,6 +98,22 @@ module.exports = function () {
       await Term.create(req.session.session_token, term);
       res.redirect(303, '/manage');
     } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post('/term/edit/:id', isUserLoaded, async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const term = {
+        title: String(req.body.editTermTitle),
+        startyear: Number(req.body.editTermYear),
+        semester: Number(req.body.editTermSemester),
+      };
+      await Term.edit(req.session.session_token, id, term);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      log.debug(error);
       next(error);
     }
   });

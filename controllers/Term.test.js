@@ -65,8 +65,39 @@ describe('Term controller tests', () => {
       });
     });
 
+    describe('edit term tests', () => {
+      test('edit - happy path edit existing', async () => {
+        const term = {
+          id: 1,
+          title: 'term1',
+          startyear: 2022,
+          semester: 2,
+        };
+        axios.put.mockResolvedValueOnce({ data: term, status: 200 });
+        const result = await Term.edit(
+          'mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q',
+          term.id,
+          term
+        );
+        expect(axios.put).toHaveBeenCalledWith(`term/${term.id}`, {
+          id: 1,
+          title: 'term1',
+          startyear: 2022,
+          semester: 2,
+        });
+        expect(result.data).toEqual(term);
+        expect(result.status).toEqual(200);
+      });
+      test('edit - error response', async () => {
+        axios.put.mockResolvedValueOnce({
+          status: 500,
+          data: { error: { status: 500, message: 'Internal Server Error' } },
+        });
+        await expect(Term.edit({})).rejects.toThrow('Advisor API Error 500: undefined');
+        expect(axios.put).toHaveBeenCalledWith(`term/${undefined}`, undefined);
+      });
+    });
     test('create - missing title error', async () => {
-
       axios.post.mockResolvedValueOnce({ status: 400, data: { Error: 'Missing Parameter' } });
 
       await expect(
@@ -75,7 +106,7 @@ describe('Term controller tests', () => {
           semester: 2,
         })
       ).rejects.toThrow('Advisor API Error 400: Missing Parameter');
-      
+
       expect(axios.post).toHaveBeenCalledWith('term', {
         startyear: 2022,
         semester: 2,
@@ -83,7 +114,6 @@ describe('Term controller tests', () => {
     });
 
     test('create - missing startyear error', async () => {
-
       axios.post.mockResolvedValueOnce({ status: 400, data: { Error: 'Missing Parameter' } });
 
       await expect(
@@ -92,7 +122,7 @@ describe('Term controller tests', () => {
           semester: 2,
         })
       ).rejects.toThrow('Advisor API Error 400: Missing Parameter');
-      
+
       expect(axios.post).toHaveBeenCalledWith('term', {
         title: 'term1',
         semester: 2,
@@ -100,7 +130,6 @@ describe('Term controller tests', () => {
     });
 
     test('create - missing semester error', async () => {
-
       axios.post.mockResolvedValueOnce({ status: 400, data: { Error: 'Missing Parameter' } });
 
       await expect(
@@ -109,13 +138,12 @@ describe('Term controller tests', () => {
           startyear: 2022,
         })
       ).rejects.toThrow('Advisor API Error 400: Missing Parameter');
-      
+
       expect(axios.post).toHaveBeenCalledWith('term', {
         title: 'term1',
         startyear: 2022,
       });
     });
-
   });
 });
 

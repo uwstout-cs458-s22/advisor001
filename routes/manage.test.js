@@ -28,6 +28,7 @@ jest.mock('../controllers/Course', () => {
 jest.mock('../controllers/Term', () => {
   return {
     create: jest.fn(),
+    edit: jest.fn(),
     fetchAll: jest.fn(),
   };
 });
@@ -179,10 +180,9 @@ describe('Manage Route Tests', () => {
 
       // check the main navbar
       expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/advise');
-
     });
 
-    test( 'basic page checks', async () => {
+    test('basic page checks', async () => {
       // create valid user
       const mockUser = new UserModel({
         id: '1000',
@@ -191,7 +191,7 @@ describe('Manage Route Tests', () => {
         enable: 'true',
         role: 'director', // use director as that is the lowest user role that can access this page
       });
-      
+
       // sign in with valid user account
       auth.isUserLoaded.mockReset();
       auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
@@ -213,19 +213,10 @@ describe('Manage Route Tests', () => {
 
       // check the main navbar
       expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/manage');
-      
+
       // count the rows
       const rows = doc.querySelectorAll('.card-body>table>tbody>tr');
-      expect(rows).toHaveLength(data.length);
-
-      // check the table contents
-      for (let i = 0; i < rows.length; i++) {
-        expect(rows[i].querySelector('td:nth-child(2)').innerHTML).toBe(data[i].title);
-        expect(rows[i].querySelector('td:nth-child(3)').innerHTML).toBe(data[i].description);
-        expect(rows[i].querySelector('td:nth-child(4)').innerHTML).toBe(data[i].prefix);
-        expect(rows[i].querySelector('td:nth-child(5)').innerHTML).toBe(data[i].suffix);
-        expect(rows[i].querySelector('td:nth-child(6)').innerHTML).toBe(data[i].credits);
-      }
+      expect(rows).toHaveLength(data.length + termData.length + programData.length);
     });
 
     test('create course success', async () => {
@@ -282,6 +273,22 @@ describe('Manage Route Tests', () => {
     test('Term.create failure', async () => {
       Term.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
       const response = await request(app).post('/manage/term/add/');
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Term.edit success', async () => {
+      const data = dataForGetTerm(1);
+      Term.edit.mockResolvedValueOnce(data[0]);
+      const response = await request(app).post(`/manage/term/edit/${data[0].id}`).send({
+        title: 'NEW TITLE',
+        startYear: 2000,
+        semester: 1,
+      });
+      expect(response.statusCode).toBe(303);
+    });
+    test('Term,edit failure', async () => {
+      Term.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post(`/manage/term/edit/BADID`);
       expect(response.statusCode).toBe(500);
     });
 
