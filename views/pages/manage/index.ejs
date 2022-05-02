@@ -261,7 +261,10 @@
           </select>
           <br>
           <input type="submit" value="Search" class="btn btn-primary">
-          <input value="Edit Term" class="btn btn-primary" data-toggle="modal" data-target="#editTermModal">
+          <script>
+            const termId = document.getElementById('terms').value;
+          </script>
+          <button type="button" value="Edit Term" class="btn btn-primary" data-toggle="modal" data-target="#editTermModal">Edit Term</button>
         </form>
       </div>
     <% } %>
@@ -318,11 +321,11 @@
       <button type="button" class="close" data-dismiss="modal">&times;</button>
     </div>
     <div class="modal-body">
-      <form id="editTermForm" method="POST" action="/manage/term/edit/TODO: TERM ID HERE">
+      <form id="editTermForm" method="POST" action="/manage/term/edit/">
         <!-- Title -->
         <div class="form-group">
           <label for="editTermTitle">Term Name: </label>
-          <input class="form-control" type="text" name="editTermTitle" value="PLACEHOLDER"></input>
+          <input class="form-control" type="text" name="editTermTitle" value=""></input>
         </div>
         <!-- Start Year -->
         <div class="form-group">

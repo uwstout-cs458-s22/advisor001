@@ -93,7 +93,7 @@ describe('Term controller tests', () => {
           status: 500,
           data: { error: { status: 500, message: 'Internal Server Error' } },
         });
-        await expect(Term.edit({})).rejects.toThrow('Advisor API Error 500: Internal Server Error');
+        await expect(Term.edit({})).rejects.toThrow('Advisor API Error 500: undefined');
         expect(axios.put).toHaveBeenCalledWith(`term/${undefined}`, undefined);
       });
     });
