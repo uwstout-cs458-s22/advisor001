@@ -32,7 +32,6 @@ async function edit(sessionToken, userId, newValues) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
-  // newValues = JSON.parse(newValues)
   const response = await request.put(`/users/${userId}`, newValues);
   if (response.status === 200 || response.status === 201) {
     const userParms = deSerializeUser(response.data);
@@ -78,5 +77,5 @@ module.exports = {
   create,
   fetchAll,
   edit,
-  deleteUser
+  deleteUser,
 };

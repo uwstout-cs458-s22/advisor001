@@ -12,7 +12,7 @@ const mockUser = new UserModel({
   id: '1000',
   email: 'master@uwstout.edu',
   userId: 'user-test-someguid',
-  enable: 'true',
+  enable: true,
   role: 'admin',
 });
 
@@ -51,6 +51,30 @@ describe('Advise Route Tests', () => {
       expect(doc.querySelector('.navbar-nav>.navbar-text').innerHTML).toContain(
         'master@uwstout.edu'
       );
+    });
+
+    test('failed enabled, redirect to access denied', async () => {
+      // create invalid user
+      const disabledUser = {
+        id: '1000',
+        email: 'master@uwstout.edu',
+        userId: 'user-test-someguid',
+        enable: false, // disabled user
+        role: 'admin',
+      };
+
+      // sign in with invalid user account
+      auth.isUserLoaded.mockReset();
+      auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
+        req.session = {
+          session_token: 'thisisatoken',
+          user: disabledUser,
+        };
+        next();
+      });
+
+      const response = await request(app).get('/advise');
+      expect(response.text).toContain('Access Denied');
     });
   });
 });

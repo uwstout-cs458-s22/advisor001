@@ -5,7 +5,6 @@ const log = require('loglevel');
 const User = require('../controllers/User');
 const UserModel = require('../models/User');
 const auth = require('../services/auth');
-global.window = { location: { pathname: '/admin' } };
 
 beforeAll(() => {
   log.disableAll();
@@ -46,17 +45,6 @@ jest.mock('../services/auth', () => {
   };
 });
 
-function mockUserIsLoggedIn() {
-  auth.isUserLoaded.mockReset();
-  auth.isUserLoaded.mockImplementationOnce((req, res, next) => {
-    req.session = {
-      session_token: 'thisisatoken',
-      user: mockUser,
-    };
-    next();
-  });
-}
-
 function resetMockIsUserLoaded() {
   auth.isUserLoaded.mockImplementation((req, res, next) => {
     req.session = {
@@ -91,6 +79,10 @@ describe('Admin Route Tests', () => {
     User.fetchAll.mockReset();
     User.fetchAll.mockResolvedValue(null);
     resetMockIsUserLoaded();
+    User.edit.mockReset();
+    User.edit.mockResolvedValue(null);
+    User.deleteUser.mockReset();
+    User.deleteUser.mockResolvedValue(null);
   });
 
   describe('Admin Index Page Tests', () => {
@@ -166,41 +158,39 @@ describe('Admin Route Tests', () => {
       expect(User.fetchAll.mock.calls[0][2]).toBe(10000000);
       expect(response.statusCode).toBe(500);
     });
-    test('User.edit successful route disabled', async () => {
-      mockUserIsLoggedIn();
+
+    test('User.edit successful route - enabled: false', async () => {
       const data = dataForGetUser(1);
       User.edit.mockResolvedValue(data[0]);
-      expect(data[0].userId).toBe('user-test-someguid1');
       const response = await request(app).post(`/admin/users/edit/${data[0].userId}`);
       expect(response.statusCode).toBe(303);
-      expect(global.window.location.pathname).toEqual('/admin');
     });
 
-    test('User.edit successful route enabled', async () => {
-      mockUserIsLoggedIn();
+    test('User.edit successful route - enabled: true', async () => {
       const data = dataForGetUser(1);
       User.edit.mockResolvedValue(data[0]);
-      expect(data[0].userId).toBe('user-test-someguid1');
       const response = await request(app)
         .post(`/admin/users/edit/${data[0].userId}`)
         .send({ enabled: true });
       expect(response.statusCode).toBe(303);
-      expect(global.window.location.pathname).toEqual('/admin');
+    });
+
+    test('User.edit failure route', async () => {
+      User.edit.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post(`/admin/users/edit/BADID`);
+      expect(response.statusCode).toBe(500);
     });
 
     test('User.deleteUser successful route', async () => {
-      mockUserIsLoggedIn();
       const data = dataForGetUser(1);
       User.deleteUser.mockResolvedValue(data[0]);
-      expect(data[0].userId).toBe('user-test-someguid1');
       const response = await request(app).get(`/admin/users/delete/${data[0].userId}`);
-      expect(response.statusCode).not.toBe(404);
-      // Line 34 does not get covered by the test, but the test below covers it.
-      expect(global.window.location.pathname).toEqual('/admin');
+      expect(response.statusCode).toBe(303);
     });
 
     test('User.deleteUser thrown error', async () => {
-      const response = await request(app).get(`/admin/users/delete/${undefined}`);
+      User.deleteUser.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/admin/users/delete/BADID`);
       expect(response.statusCode).toBe(500);
     });
   });
