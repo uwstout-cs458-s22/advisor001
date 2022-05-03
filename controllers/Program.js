@@ -14,6 +14,8 @@ async function deleteProgram(sessionToken, id) {
     return response;
   } else {
     throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.Error}`);
+  }
+}
 async function create(sessionToken, program) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },

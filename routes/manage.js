@@ -131,7 +131,6 @@ module.exports = function () {
     }
   });
 
-  //Not sure if this needs more work.
   router.get('/program/delete/:id', async (req, res, next) => {
     try {
       const id = req.params.id;
