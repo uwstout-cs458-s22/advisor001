@@ -4,6 +4,8 @@ class Program {
     this.title = params.title;
     this.description = params.description;
   }
+
+  // future complex logic functions can go here
 }
 
 module.exports = Program;
