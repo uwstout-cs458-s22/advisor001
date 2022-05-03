@@ -102,7 +102,7 @@ describe('fetchAll tests', () => {
     expect(axios.get).toHaveBeenCalledWith('program?limit=100&offset=0');
   });
 });
-//Delete program test
+
 describe('delete tests', () => {
   test('delete - valid delete', async () => {
       const programs = {
