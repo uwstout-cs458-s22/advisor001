@@ -102,16 +102,16 @@ describe('fetchAll tests', () => {
     expect(axios.get).toHaveBeenCalledWith('program?limit=100&offset=0');
   });
 });
-
+//Delete program test
 describe('delete tests', () => {
   test('delete - valid delete', async () => {
-      const Program = {
+      const programs = {
           id: '1',
           title: 'Computer Science',
           description: 'This course is for students who want to learn how to program computers.',
       };
       axios.delete.mockResolvedValueOnce({
-          data: Program,
+          data: programs,
           status: 200,
       });
 
