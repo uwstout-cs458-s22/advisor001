@@ -37,6 +37,7 @@ jest.mock('../controllers/Program', () => {
   return {
     fetchAll: jest.fn(),
     create: jest.fn(),
+    edit: jest.fn(),
   };
 });
 
