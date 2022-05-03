@@ -37,6 +37,7 @@ jest.mock('../controllers/Program', () => {
   return {
     fetchAll: jest.fn(),
     create: jest.fn(),
+    deleteProgram: jest.fn()
   };
 });
 
@@ -301,6 +302,19 @@ describe('Manage Route Tests', () => {
     test('Program.create failure', async () => {
       Program.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
       const response = await request(app).post('/manage/program/add/');
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Program.deleteProgram successful route', async () => {
+      const data = dataForGetProgram(2, 1);
+      Program.deleteProgram.mockResolvedValue(data[0]);
+      const response = await request(app).get(`/manage/program/delete/${data[0].id}`);
+      expect(response.statusCode).toBe(303);
+    });
+
+    test('Program.deleteProgram thrown error', async () => {
+      Program.deleteProgram.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/manage/program/delete/BADID`);
       expect(response.statusCode).toBe(500);
     });
   });
