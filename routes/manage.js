@@ -130,6 +130,17 @@ module.exports = function () {
       next(error);
     }
   });
+  
+  router.get('/program/delete/:id', isUserLoaded, async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      await Program.deleteProgram(req.session.session_token, id);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
 
   return router;
 };

@@ -76,7 +76,102 @@
             <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="/manage/course/delete/<%=courseData[i].id%>" >Delete</a>
           </td>
         </tr>
-        
+
+<!-- Edit Course Modal -->
+<div id="editCourseModal-<%=i%>" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Edit Course</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="editCourseForm" method="POST" action="/manage/course/edit/<%=courseData[i].id%>">
+        <!-- Prefix -->
+        <div class="form-group">
+          <label for="editPrefix">Prefix: </label>
+          <input class="form-control" value="<%=courseData[i].prefix%>" type="text" name="editPrefix"></input>
+        </div>
+        <!-- Suffix -->
+        <div class="form-group">
+          <label for="editSuffix">Suffix: </label>
+          <input class="form-control" value="<%=courseData[i].suffix%>" type="text" name="editSuffix"></input>
+        </div>
+        <!-- Title -->
+        <div class="form-group">
+          <label for="editTitle">Title: </label>
+          <input class="form-control" value="<%=courseData[i].title%>" type="text" name="editTitle"></input>
+        </div>
+        <!-- Description -->
+        <div class="form-group">
+          <label for="editDescription">Description: </label>
+          <input class="form-control" value="<%=courseData[i].description%>" type="text" name="editDescription"></input>
+        </div>
+        <!-- Credits -->
+        <div class="form-group">
+          <label for="editCredits">Credits: </label>
+          <input class="form-control" value="<%=courseData[i].credits%>" type="number" name="editCredits"></input>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="submit" class="btn btn-success">Save</button>
+          <button class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Closing for loop -->
+        <% } %>
+      </tbody>
+    </table>
+    <% } %>
+  </div>
+
+    <!-- if result is empty -->
+    <% if(!courseData.length) { %>
+    <p class="text-center">No Courses found!</p>
+    <% } %>
+
+    <div class="card">
+      <div class="card-header">
+        <ul class="nav nav-pills w-100">
+          <li class="nav-pill active">
+            <a class="nav-link">Programs</a>
+          </li>
+          <li class="nav-pill ml-auto">
+            <a class="nav-link active" data-toggle="modal" data-target="#addProgramModal">Add Program</a>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <% if(programData.length) { %>
+        <table class="table" id="programs-table">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th width="150px">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i = 0; i< programData.length; i++) { %>
+            <tr>
+              <th scope="row" class="align-middle"><%= programData[i].id %></th>
+              <td class="align-middle"><%= programData[i].title %></td>
+              <td class="align-middle"><%= programData[i].description %></td>
+              <td class="align-middle">
+                <a class="btn btn-secondary edit" data-toggle="modal" data-target="#">Edit</a>
+                <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="/manage/program/delete/<%=programData[i].id%>" >Delete</a>
+              </td>
+            </tr>
+    
+  <!-- Closing for loop -->
+  <% } %>
+</tbody>
+</table>
+<% } %>
+  </div>
+</div>
 
 <!-- Add Course Modal -->
 <div id="addCourseModal" class="modal fade" role="dialog">
@@ -121,98 +216,6 @@
   </div>
 </div>
 
-<!-- Edit Course Modal -->
-<div id="editCourseModal-<%=i%>" class="modal fade" role="dialog">
-  <div class="modal-dialog modal-content">
-    <div class="modal-header">
-      <h4 class="modal-title">Edit Course</h4>
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
-    </div>
-    <div class="modal-body">
-      <form id="editCourseForm" method="POST" action="/manage/course/edit/<%=courseData[i].id%>">
-        <!-- Prefix -->
-        <div class="form-group">
-          <label for="editPrefix">Prefix: </label>
-          <input class="form-control" value="<%=courseData[i].prefix%>" type="text" name="editPrefix"></input>
-        </div>
-        <!-- Suffix -->
-        <div class="form-group">
-          <label for="editSuffix">Suffix: </label>
-          <input class="form-control" value="<%=courseData[i].suffix%>" type="text" name="editSuffix"></input>
-        </div>
-        <!-- Title -->
-        <div class="form-group">
-          <label for="editTitle">Title: </label>
-          <input class="form-control" value="<%=courseData[i].title%>" type="text" name="editTitle"></input>
-        </div>
-        <!-- Description -->
-        <div class="form-group">
-          <label for="editDescription">Description: </label>
-          <input class="form-control" value="<%=courseData[i].description%>" type="text" name="editDescription"></input>
-        </div>
-        <!-- Credits -->
-        <div class="form-group">
-          <label for="editCredits">Credits: </label>
-          <input class="form-control" value="<%=courseData[i].credits%>" type="number" name="editCredits"></input>
-        </div>
-        <div class="form-group">
-          <button type="submit" id="submit" class="btn btn-success">Save</button>
-          <button class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-<!-- Closing for loop -->
-        <% } %>
-      </tbody>
-    </table>
-    <% } %>
-  </div>
-
-    <!-- if result is empty -->
-    <% if(!courseData.length) { %>
-    <p class="text-center">No Courses found!</p>
-    <% } %>
-
-
-    <div class="card">
-      <div class="card-header">
-        <ul class="nav nav-pills w-100">
-          <li class="nav-pill active">
-            <a class="nav-link">Programs</a>
-          </li>
-          <li class="nav-pill ml-auto">
-            <a class="nav-link active" data-toggle="modal" data-target="#addProgramModal">Add Program</a>
-          </li>
-        </ul>
-      </div>
-      <div class="card-body">
-        <% if(programData.length) { %>
-        <table class="table" id="programs-table">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Title</th>
-              <th scope="col">Description</th>
-              <th width="150px">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for(var i = 0; i< programData.length; i++) { %>
-            <tr>
-              <th scope="row" class="align-middle"><%= programData[i].id %></th>
-              <td class="align-middle"><%= programData[i].title %></td>
-              <td class="align-middle"><%= programData[i].description %></td>
-              <td class="align-middle">
-                <a class="btn btn-secondary edit" data-toggle="modal" data-target="#">Edit</a>
-                <a class="btn btn-danger delete" onclick="return confirm('Confirm Deletion?')" href="#" >Delete</a>
-              </td>
-            </tr>
-    
-
 <!-- Add Program Modal -->
 <div id="addProgramModal" class="modal fade" role="dialog">
   <div class="modal-dialog modal-content">
@@ -238,14 +241,6 @@
         </div>
       </form>
     </div>
-  </div>
-</div>
-
-  <!-- Closing for loop -->
-  <% } %>
-</tbody>
-</table>
-<% } %>
   </div>
 </div>
 
@@ -290,40 +285,6 @@
           </td>
         </tr>
 
-<!-- Add Term Modal -->
-<div id="addTermModal" class="modal fade" role="dialog">
-  <div class="modal-dialog modal-content">
-    <div class="modal-header">
-      <h4 class="modal-title">Add Term</h4>
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
-    </div>
-    <div class="modal-body">
-      <form id="addTermForm" method="POST" action="/manage/term/add/">
-        <!-- Title -->
-        <div class="form-group">
-          <label for="termTitle">Term Name: </label>
-          <input class="form-control" type="text" name="termTitle"></input>
-        </div>
-        <!-- Start Year -->
-        <div class="form-group">
-          <label for="termYear">Start Year: </label>
-          <input class="form-control" id="yearSelect" type="number" min="2022" max="9999" name="termYear" value=""></input>
-          <script>document.getElementById("yearSelect").value = (new Date().getFullYear())</script>
-        </div>
-        <!-- Semester -->
-        <div class="form-group">
-          <label for="termSemester">Semester: </label>
-          <input class="form-control" type="number" min="1" max="2" name="termSemester"></input>
-        </div>
-        <div class="form-group">
-          <button type="submit" id="submit" class="btn btn-success">Save</button>
-          <button class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- Edit Term Modal -->
 <div id="editTermModal-<%=i%>" class="modal fade" role="dialog">
   <div class="modal-dialog modal-content">
@@ -362,6 +323,40 @@
 </tbody>
 </table>
 <% } %>
+<!-- Add Term Modal -->
+<div id="addTermModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Add Term</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="addTermForm" method="POST" action="/manage/term/add/">
+        <!-- Title -->
+        <div class="form-group">
+          <label for="termTitle">Term Name: </label>
+          <input class="form-control" type="text" name="termTitle"></input>
+        </div>
+        <!-- Start Year -->
+        <div class="form-group">
+          <label for="termYear">Start Year: </label>
+          <input class="form-control" id="yearSelect" type="number" min="2022" max="9999" name="termYear" value=""></input>
+          <script>document.getElementById("yearSelect").value = (new Date().getFullYear())</script>
+        </div>
+        <!-- Semester -->
+        <div class="form-group">
+          <label for="termSemester">Semester: </label>
+          <input class="form-control" type="number" min="1" max="2" name="termSemester"></input>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="submit" class="btn btn-success">Save</button>
+          <button class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
     <!-- if result is empty -->
     <% if(!termData.length) { %>
