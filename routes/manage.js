@@ -131,17 +131,19 @@ module.exports = function () {
     }
   });
 
-  router.get('/program/edit/:id', async (req, res, next) => { // MAKE POST ?
+  router.post('/program/edit/:id', isUserLoaded, async (req, res, next) => {
     try {
-      // const id = Number(req.params.id);
-      // const program = { // CHANGE TO PROGRAM INPUTS
-      //   title: 'I hope this works',
-      //   startyear: 2040,
-      //   semester: 2,
-      // };
-      // await Program.edit(req.session.session_token, id, program);
-      res.redirect('/manage');
+      const id = Number(req.params.id);
+      const program = {
+        title: String(req.body.editProgramTitle),
+        description: String(req.body.editProgramDescription),
+      };
+      log.debug("program MADE");
+      await Program.edit(req.session.session_token, id, program); //CATCHES HERE
+      log.debug("program EDITED");
+      res.redirect(303, '/manage');
     } catch (error) {
+      log.info("BREAK!");
       log.debug(error);
       next(error);
     }

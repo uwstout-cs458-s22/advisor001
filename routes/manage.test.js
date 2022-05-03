@@ -283,26 +283,24 @@ describe('Manage Route Tests', () => {
       expect(response.statusCode).toBe(500);
     });
 
-    // Someday these Programs will exist, someday
-    // test('Program.edit success', async () => {
-    //   const data = dataForGetProgram(1);
-    //   Program.edit.mockResolvedValueOnce(data[0]);
-    //   const response = await request(app).get(`/manage/program/edit/${data[0].id}`).send({
-    //     title: 'NEW TITLE',
-    //     startYear: 2000,
-    //     semester: 1,
-    //   });
-    //   expect(response.statusCode).not.toBe(404);
-    //   // Line 114 does not get covered by the test, but the test below covers it.
-    //   expect(global.window.location.pathname).toEqual('/manage');
-    // });
-    // test('Program,edit failure', async () => {
-    //   const data = dataForGetProgram(1);
-    //   Program.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
-    //   const response = await request(app).get(`/manage/program/edit/${data[0].id}`);
-    //   expect(response.statusCode).toBe(500);
-    // });
-    
+    test('Program.edit success', async () => {
+      const data = dataForGetProgram(1);
+      Program.edit.mockResolvedValueOnce(data[0]);
+      const response = await request(app).get(`/manage/program/edit/${data[0].id}`).send({
+        title: "NEW TITLE",
+        description: "NEW DESCRIPTION",
+      });
+      expect(response.statusCode).not.toBe(404);
+      // Line 114 does not get covered by the test, but the test below covers it.
+      expect(global.window.location.pathname).toEqual('/manage');
+    });
+    test('Program,edit failure', async () => {
+      const data = dataForGetProgram(1);
+      Program.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/manage/program/edit/${data[0].id}`);
+      expect(response.statusCode).toBe(500);
+    });
+
     test('Term.edit success', async () => {
       const data = dataForGetTerm(1);
       Term.edit.mockResolvedValueOnce(data[0]);
