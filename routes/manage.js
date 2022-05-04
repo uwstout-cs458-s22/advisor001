@@ -118,6 +118,16 @@ module.exports = function () {
     }
   });
 
+  router.post('/term/delete/:id', isUserLoaded, async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      await Term.deleteTerm(req.session.session_token, id);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   router.post('/program/add/', isUserLoaded, async (req, res, next) => {
     try {
       const program = {

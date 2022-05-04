@@ -30,6 +30,7 @@ jest.mock('../controllers/Term', () => {
     create: jest.fn(),
     edit: jest.fn(),
     fetchAll: jest.fn(),
+    deleteTerm: jest.fn(),
   };
 });
 
@@ -148,6 +149,7 @@ describe('Manage Route Tests', () => {
     Course.edit.mockResolvedValue(null);
     Course.deleteCourse.mockResolvedValue(null);
     Term.create.mockResolvedValue(null);
+    Term.deleteTerm.mockResolvedValue(null);
     resetMockIsUserLoaded();
   });
 
@@ -303,5 +305,19 @@ describe('Manage Route Tests', () => {
       const response = await request(app).post('/manage/program/add/');
       expect(response.statusCode).toBe(500);
     });
+    
+     test('Term.deleteTerm successful route', async () => {
+      const data = dataForGetTerm(2, 1);
+      Term.deleteTerm.mockResolvedValue(data[0]);
+      const response = await request(app).get(`/manage/term/delete/${data[0].id}`);
+      expect(response.statusCode).toBe(303);
+     });
+
+    test('Term.deleteTerm thrown error', async () => {
+      Term.deleteTerm.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/manage/term/delete/BADID`);
+      expect(response.statusCode).toBe(500);
+    });
+
   });
 });
