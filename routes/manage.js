@@ -102,6 +102,16 @@ module.exports = function () {
     }
   });
 
+  router.get('/term/delete/:id', isUserLoaded, async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      await Term.deleteTerm(req.session.session_token, id);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   router.post('/term/edit/:id', isUserLoaded, async (req, res, next) => {
     try {
       const id = Number(req.params.id);
@@ -130,7 +140,7 @@ module.exports = function () {
       next(error);
     }
   });
-  
+
   router.get('/program/delete/:id', isUserLoaded, async (req, res, next) => {
     try {
       const id = req.params.id;
@@ -140,7 +150,6 @@ module.exports = function () {
       next(error);
     }
   });
-
 
   router.post('/program/edit/:id', isUserLoaded, async (req, res, next) => {
     try {

@@ -28,6 +28,7 @@ jest.mock('../controllers/Course', () => {
 jest.mock('../controllers/Term', () => {
   return {
     create: jest.fn(),
+    deleteTerm: jest.fn(),
     edit: jest.fn(),
     fetchAll: jest.fn(),
   };
@@ -110,6 +111,7 @@ function dataForGetCourse(rows, offset = 0) {
   return data;
 }
 
+// a helper that creates an array structure getTermById
 function dataForGetTerm(rows, offset = 0) {
   const data = [];
   for (let i = 1; i <= rows; i++) {
@@ -274,6 +276,19 @@ describe('Manage Route Tests', () => {
     test('Term.create failure', async () => {
       Term.create.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
       const response = await request(app).post('/manage/term/add/');
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Term.deleteTerm successful route', async () => {
+      const data = dataForGetTerm(1);
+      Term.deleteTerm.mockResolvedValue(data[0]);
+      const response = await request(app).get(`/manage/term/delete/${data[0].id}`);
+      expect(response.statusCode).toBe(303);
+    });
+
+    test('Term.deleteTerm thrown error', async () => {
+      Term.deleteTerm.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/manage/term/delete/BADID`);
       expect(response.statusCode).toBe(500);
     });
 
