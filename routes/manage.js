@@ -138,13 +138,9 @@ module.exports = function () {
         title: String(req.body.editProgramTitle),
         description: String(req.body.editProgramDescription),
       };
-      log.debug("program MADE");
-      await Program.edit(req.session.session_token, id, program); //CATCHES HERE
-      log.debug("program EDITED");
+      await Program.edit(req.session.session_token, id, program);
       res.redirect(303, '/manage');
     } catch (error) {
-      log.info("BREAK!");
-      log.debug(error);
       next(error);
     }
   });

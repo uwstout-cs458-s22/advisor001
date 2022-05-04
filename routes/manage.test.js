@@ -41,13 +41,6 @@ jest.mock('../controllers/Program', () => {
   };
 });
 
-// jest.mock('../controllers/Program', () => {
-//   return {
-//     create: jest.fn(),
-//     edit: jest.fn(), //ADD THIS
-//   };
-// });
-
 jest.mock('../services/environment', () => {
   return {
     port: 3000,
@@ -287,12 +280,11 @@ describe('Manage Route Tests', () => {
     test('Program.edit success', async () => {
       const data = dataForGetProgram(1);
       Program.edit.mockResolvedValueOnce(data[0]);
-      const response = await request(app).get(`/manage/program/edit/${data[0].id}`).send({
-        title: "NEW TITLE",
-        description: "NEW DESCRIPTION",
+      const response = await request(app).post(`/manage/program/edit/${data[0].id}`).send({
+        title: 'NEW TITLE',
+        description: 'NEW DESCRIPTION',
       });
       expect(response.statusCode).toBe(303);
-      expect(global.window.location.pathname).toEqual('/manage');
     });
     test('Program.edit failure', async () => {
       Program.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
