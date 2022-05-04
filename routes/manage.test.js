@@ -291,14 +291,12 @@ describe('Manage Route Tests', () => {
         title: "NEW TITLE",
         description: "NEW DESCRIPTION",
       });
-      expect(response.statusCode).not.toBe(404);
-      // Line 114 does not get covered by the test, but the test below covers it.
+      expect(response.statusCode).toBe(303);
       expect(global.window.location.pathname).toEqual('/manage');
     });
-    test('Program,edit failure', async () => {
-      const data = dataForGetProgram(1);
+    test('Program.edit failure', async () => {
       Program.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
-      const response = await request(app).get(`/manage/program/edit/${data[0].id}`);
+      const response = await request(app).post(`/manage/program/edit/BADID`);
       expect(response.statusCode).toBe(500);
     });
 
