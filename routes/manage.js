@@ -142,5 +142,19 @@ module.exports = function () {
   });
 
 
+  router.post('/program/edit/:id', isUserLoaded, async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const program = {
+        title: String(req.body.editProgramTitle),
+        description: String(req.body.editProgramDescription),
+      };
+      await Program.edit(req.session.session_token, id, program);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return router;
 };
