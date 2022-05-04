@@ -280,19 +280,15 @@ describe('Manage Route Tests', () => {
     });
 
     test('Term.deleteTerm successful route', async () => {
-      const data = dataForGetTerm(2, 1);
+      const data = dataForGetTerm(1);
       Term.deleteTerm.mockResolvedValue(data[0]);
-      // Term id is being set by value in function, which is created from index + offset
-      expect(data[0].id).toBe('2');
-      expect(data[1].id).toBe('3');
       const response = await request(app).get(`/manage/term/delete/${data[0].id}`);
-      expect(response.statusCode).not.toBe(404);
-      // Line 34 does not get covered by the test, but the test below covers it.
-      expect(global.window.location.pathname).toEqual('/manage');
+      expect(response.statusCode).toBe(303);
     });
 
     test('Term.deleteTerm thrown error', async () => {
-      const response = await request(app).get(`/manage/term/delete/${undefined}`);
+      Term.deleteTerm.mockRejectedValue(HttpError(500, `Advisor API Error`));
+      const response = await request(app).get(`/manage/term/delete/BADID`);
       expect(response.statusCode).toBe(500);
     });
 

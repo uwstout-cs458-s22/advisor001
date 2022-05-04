@@ -190,3 +190,23 @@ describe('fetchAll tests', () => {
     expect(axios.get).toHaveBeenCalledWith('term?limit=100&offset=0');
   });
 });
+
+describe('delete tests', () => {
+  test('delete - happy path test', async () => {
+    axios.delete.mockResolvedValueOnce({ status: 200 });
+    const result = await Term.deleteTerm('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', 1);
+    expect(axios.delete).toHaveBeenCalledWith('term/1');
+    expect(result).toEqual({ status: 200 });
+  });
+
+  test('delete - error response', async () => {
+    axios.delete.mockResolvedValueOnce({
+      status: 500,
+      data: { error: { status: 500, message: 'undefined' } },
+    });
+    await expect(
+      Term.deleteTerm('mZAYn5aLEqKUlZ_Ad9U_fWr38GaAQ1oFAhT8ds245v7Q', 1)
+    ).rejects.toThrow('Advisor API Delete Error 500: undefined');
+    expect(axios.delete).toHaveBeenCalledWith('term/1');
+  });
+});
