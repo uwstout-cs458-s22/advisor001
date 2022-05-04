@@ -212,7 +212,6 @@ describe('Manage Route Tests', () => {
       Program.fetchAll.mockResolvedValueOnce(programData);
       const response = await request(app).get('/manage');
       const doc = new JSDOM(response.text).window.document;
-      expect(response.text).toBe('hi');
       // check the main navbar
       expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/manage');
 
