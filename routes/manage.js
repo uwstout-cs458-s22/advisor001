@@ -130,6 +130,31 @@ module.exports = function () {
       next(error);
     }
   });
+  
+  router.get('/program/delete/:id', isUserLoaded, async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      await Program.deleteProgram(req.session.session_token, id);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
+
+
+  router.post('/program/edit/:id', isUserLoaded, async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const program = {
+        title: String(req.body.editProgramTitle),
+        description: String(req.body.editProgramDescription),
+      };
+      await Program.edit(req.session.session_token, id, program);
+      res.redirect(303, '/manage');
+    } catch (error) {
+      next(error);
+    }
+  });
 
   return router;
 };

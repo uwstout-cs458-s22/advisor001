@@ -4,6 +4,18 @@ const { deSerializeProgram } = require('../serializers/Program');
 const Program = require('../models/Program');
 const HttpError = require('http-errors');
 
+async function deleteProgram(sessionToken, id) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.delete(`program/${id}`);
+  if (response.status === 200) {
+    log.debug(`Program: ${id} successfully deleted`);
+    return response;
+  } else {
+    throw HttpError(500, `Advisor API Delete Error ${response.status}: ${response.data.Error}`);
+  }
+}
 async function create(sessionToken, program) {
   const request = axios.create({
     headers: { Authorization: `Bearer ${sessionToken}` },
@@ -18,6 +30,23 @@ async function create(sessionToken, program) {
     return response;
   } else {
     throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.Error}`);
+  }
+}
+
+async function edit(sessionToken, id, program) {
+  const request = axios.create({
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+  const response = await request.put(`program/${id}`, program);
+  if (response.status === 200 || response.status === 201) {
+    const programParms = deSerializeProgram(response.data);
+    const programs = new Program(programParms);
+    log.debug(
+      `Advisor API Success: Edited (${response.status}) Program ${program.id} (${programs.title})`
+    );
+    return response;
+  } else {
+    throw HttpError(500, `Advisor API Error ${response.status}: ${response.data.error.message}`);
   }
 }
 
@@ -40,5 +69,7 @@ async function fetchAll(sessionToken, offset, limit) {
 
 module.exports = {
   create,
-  fetchAll
+  edit,
+  fetchAll,
+  deleteProgram,
 };
