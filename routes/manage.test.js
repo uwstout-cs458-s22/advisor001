@@ -38,6 +38,7 @@ jest.mock('../controllers/Program', () => {
   return {
     fetchAll: jest.fn(),
     create: jest.fn(),
+    edit: jest.fn(),
     deleteProgram: jest.fn(),
   };
 });
@@ -213,7 +214,6 @@ describe('Manage Route Tests', () => {
       Program.fetchAll.mockResolvedValueOnce(programData);
       const response = await request(app).get('/manage');
       const doc = new JSDOM(response.text).window.document;
-
       // check the main navbar
       expect(doc.querySelector('.navbar-nav>.active').getAttribute('href')).toBe('/manage');
 
@@ -289,6 +289,21 @@ describe('Manage Route Tests', () => {
     test('Term.deleteTerm thrown error', async () => {
       Term.deleteTerm.mockRejectedValue(HttpError(500, `Advisor API Error`));
       const response = await request(app).get(`/manage/term/delete/BADID`);
+      expect(response.statusCode).toBe(500);
+    });
+
+    test('Program.edit success', async () => {
+      const data = dataForGetProgram(1);
+      Program.edit.mockResolvedValueOnce(data[0]);
+      const response = await request(app).post(`/manage/program/edit/${data[0].id}`).send({
+        title: 'NEW TITLE',
+        description: 'NEW DESCRIPTION',
+      });
+      expect(response.statusCode).toBe(303);
+    });
+    test('Program.edit failure', async () => {
+      Program.edit.mockRejectedValueOnce(HttpError(500, `Advisor API Error`));
+      const response = await request(app).post(`/manage/program/edit/BADID`);
       expect(response.statusCode).toBe(500);
     });
 
