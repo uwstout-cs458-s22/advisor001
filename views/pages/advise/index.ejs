@@ -1,3 +1,92 @@
-<div>
-  This will be the advisement page - late semester work
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-pills w-100">
+      <li class="nav-pill active">
+        <a class="nav-link">Welcome to the Advise Page!</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <form>
+        <label for="corseReq">Select Your Program:</label>
+        <br />
+        <select name="courseReq" id="courseReq" class="form-control">
+          <option value="none" selected disabled hidden>Select a Program</option>
+          <option value="csssd">Cyber Security and Secure Software Development (CSSSD)</option>
+          <option value="gdd">Game Design and Development (GDD)</option>
+          <option value="ma">Mobile Applications (MA)</option>
+          <option value="interdisciplinary">Interdisciplinary</option>
+        </select>
+        <br />
+        <input type="button" value="Show" class="btn btn-primary" onClick="checkFormValue()" />
+      </form>
+    </div>
+    <div class="content">
+      <div id="first" style = "display: none;">
+        <img src="https://i.imgur.com/lqqpGEO.jpg" width="100%" height="auto" />
+      </div>
+      <div id="second" style = "display: none;">
+        <img
+          src="https://i.imgur.com/OO1BI8C.jpg" width="100%" height="auto" 
+        />
+      </div>
+      <div id="third" style = "display: none;">
+        <img
+          src="https://i.imgur.com/3FbsOix.jpg" width="100%" height="auto"
+        />
+        </div>
+
+        <div id="fourth" style = "display: none;">
+          <img
+            src="https://i.imgur.com/tl9NGlV.jpg" width="100%" height="auto"
+          />
+          </div>
+  
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function checkFormValue() {
+      const x = document.getElementById('courseReq').value;
+      if (x == 'csssd') {
+        ShowCSSSD();
+      } else if (x == 'gdd') {
+        ShowGDD();
+      } else if (x == 'ma') {
+        ShowMA();
+      } else if (x == 'interdisciplinary') {
+        ShowInterdisciplinary();
+      }
+    }
+
+    const ShowCSSSD = () => {
+      document.getElementById('first').style.display = 'block';
+      document.getElementById('second').style.display = 'none';
+      document.getElementById('third').style.display = 'none';
+      document.getElementById('fourth').style.display = 'none';
+    };
+
+    const ShowGDD = () => {
+      document.getElementById('second').style.display = 'block';
+      document.getElementById('first').style.display = 'none';
+      document.getElementById('third').style.display = 'none';
+      document.getElementById('fourth').style.display = 'none';
+    };
+
+    const ShowMA = () => {
+      document.getElementById('third').style.display = 'block';
+      document.getElementById('first').style.display = 'none';
+      document.getElementById('second').style.display = 'none';
+      document.getElementById('fourth').style.display = 'none';
+    };
+
+    const ShowInterdisciplinary = () => {
+      document.getElementById('fourth').style.display = 'block';
+      document.getElementById('first').style.display = 'none';
+      document.getElementById('second').style.display = 'none';
+      document.getElementById('third').style.display = 'none';
+    };
+  </script>
 </div>
