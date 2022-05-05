@@ -65,3 +65,15 @@ body {
   justify-content: center;
   width: 450px;
 }
+
+.Sign-in-container2 {
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #ebebeb;
+  border-radius: 9px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  display: flex;
+  height: 375px;
+  justify-content: center;
+}
